@@ -1,5 +1,6 @@
 <script>
   import abcjs from 'abcjs';
+  import { onMount } from 'svelte';
 
   let id = 'abc-123';
   const song = 'X:1\nT:Speed the Plough\nM:4/4\nC:Trad.\nK:G\n|:GABc dedB|dedB dedB|c2ec B2dB|c2A2 A2BA|\nGABc dedB|dedB dedB|c2ec B2dB|A2F2 G4:|\n|:g2gf gdBd|g2f2 e2d2|c2ec B2dB|c2A2 A2df|\ng2gf g2Bd|g2f2 e2d2|c2ec B2dB|A2F2 G4:|';
@@ -7,7 +8,10 @@
     "Title": { id: null, value: 'title'},
     "Notation": { id: 'notation', value: null},
   };
-  setTimeout(function() {abcjs.renderAbc('notation', song, {})}, 300);
+  //setTimeout(function() {abcjs.renderAbc('notation', song, {})}, 300);
+  onMount(() => {
+    abcjs.renderAbc('notation', song, {});
+  })
 </script>
 
 <style>
