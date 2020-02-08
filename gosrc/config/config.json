@@ -1,0 +1,5 @@
+{
+    "sql-engine":"sqlite3",
+    "config-dir":"./config/"
+
+}

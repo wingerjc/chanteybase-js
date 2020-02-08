@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -25,14 +27,34 @@ func main() {
 	http.Handle("/", s)
 	//log.Fatal(http.ListenAndServe(":8080",nil))
 
+	config := loadConfig()
 	sqlDB, err := sqlx.Open("sqlite3", "./chanteys.db")
 	defer sqlDB.Close()
 	if err != nil {
 		log.Fatalf("Couldn't open DB: %s", err.Error())
 	}
 
-	for _, s := range models.GetModelSchemas() {
-		log.Print(s)
-		sqlDB.Exec(s)
+	modelDefs := models.GetModelDefinitions(config.ConfigDirectory, models.DIALECT_SQLITE)
+	for _, s := range modelDefs {
+		log.Print(s.CreateScript())
+		sqlDB.Exec(s.CreateScript())
 	}
+	for _, s := range modelDefs {
+		log.Print(s.ConstraintScript())
+		sqlDB.Exec(s.ConstraintScript())
+	}
+}
+
+type Config struct {
+	SqlDialect      string `json:"sql-dialect"`
+	ConfigDirectory string `json:"config-dir"`
+}
+
+// TODO: pass config filename.
+func loadConfig() *Config {
+	file, _ := ioutil.ReadFile("./config/config.json")
+	config := Config{}
+	_ = json.Unmarshal([]byte(file), &config)
+
+	return &config
 }

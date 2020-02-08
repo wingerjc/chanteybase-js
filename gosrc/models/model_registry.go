@@ -1,13 +1,7 @@
 package models
 
-func GetModelSchemas() []string {
-	return []string{
-		chanteySchema,
-	}
-}
-
-func GetModelConstraints() []string {
-	return []string{
-		chanteyConstraints,
+func GetModelDefinitions(path string, dialect SqlDialect) []*DatabaseModel {
+	return []*DatabaseModel{
+		LoadChanteyConfig(path, dialect),
 	}
 }

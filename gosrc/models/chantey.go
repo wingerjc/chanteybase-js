@@ -1,20 +1,13 @@
 package models
 
-import "database/sql"
-
-const (
-	chanteySchema = `CREATE TABLE IF NOT EXISTS chantey(
-    id TEXT PRIMARY KEY,
-    tune_ids TEXT NOT NULL,
-    collection_id TEXT NOT NULL,
-    collection_location INTEGER,
-    title TEXT NOT NULL,
-    themes TEXT NOT NULL,
-    lyrics TEXT NOT NULL,
-    abc TEXT
-    );`
-	chanteyConstraints = `-- fk constraints for the TABLE`
+import (
+	"database/sql"
+	"path/filepath"
 )
+
+func LoadChanteyConfig(path string, dialect SqlDialect) *DatabaseModel {
+	return NewDatabaseModel(filepath.Join(path, "chantey.json"), dialect)
+}
 
 type Chantey struct {
 	ID                 string         `db:"id"`
