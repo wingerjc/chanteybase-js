@@ -9,6 +9,10 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/wingerjc/chanteybase-js/go",
     visibility = ["//visibility:private"],
+    deps = [
+        "@com_github_jmoiron_sqlx//:go_default_library",
+        "@com_github_mattn_go_sqlite3//:go_default_library",
+    ],
 )
 
 go_binary(
