@@ -57,5 +57,6 @@ func processScript(script []string, dialect map[string]string) string {
 func SQLITE_TEMPLATE() map[string]string {
 	return map[string]string{
 		"$TEXT": "TEXT",
+		"$INT":  "INTEGER",
 	}
 }

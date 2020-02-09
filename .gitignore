@@ -9,3 +9,5 @@ tmp
 #*#
 bazel-*
 secrets.json
+chanteys.db
+*.exe
