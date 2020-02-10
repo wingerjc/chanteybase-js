@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -44,11 +45,15 @@ func main() {
 		log.Print(s.ConstraintScript())
 		sqlDB.Exec(s.ConstraintScript())
 	}
+
+	data := models.GetDataFromJson(config.DataDirectory, nil)
+	fmt.Println(len(data.People))
 }
 
 type Config struct {
 	SqlDialect      string `json:"sql-dialect"`
 	ConfigDirectory string `json:"config-dir"`
+	DataDirectory   string `json:"data-dir"`
 }
 
 // TODO: pass config filename.

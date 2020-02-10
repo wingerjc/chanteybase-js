@@ -1,5 +1,5 @@
 {
     "sql-engine":"sqlite3",
-    "config-dir":"./config/"
-
+    "config-dir":"./config/",
+    "data-dir":"./data/"
 }

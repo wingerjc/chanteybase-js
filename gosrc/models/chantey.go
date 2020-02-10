@@ -5,6 +5,19 @@ import (
 	"strings"
 )
 
+const (
+	// Chantey types
+	TYPE_HALYARD    = "halyard"
+	TYPE_CAPSTAN    = "capstan"
+	TYPE_FOCSLE     = "focsle"
+	TYPE_SHORT_HAUL = "short haul"
+	TYPE_BUNTING    = "bunting"
+	// Location types
+	LOC_PAGE   = "page"
+	LOC_SECONG = "second"
+	LOC_TRACK  = "track"
+)
+
 func LoadChanteyConfig(dialect *SqlDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS chantey(
@@ -13,7 +26,8 @@ func LoadChanteyConfig(dialect *SqlDialect) *DatabaseModel {
        collection_id $TEXT NOT NULL,
        collection_location INTEGER,
        title $TEXT NOT NULL,
-       themes $TEXT NOT NULL,
+	   themes $TEXT NOT NULL,
+	   types $TEXT NOT NULL,
        lyrics $TEXT NOT NULL,
        abc $TEXT
        );`,
@@ -27,8 +41,10 @@ type Chantey struct {
 	TuneIDs            string         `db:"tune_ids"`
 	CollectionID       string         `db:"collection_id"`
 	CollectionLocation sql.NullInt64  `db:"collection_location"`
+	LocationType       string         `db:"location_type"`
 	Title              string         `db:"title"`
 	Themes             string         `db:"themes"`
+	Types              string         `db:"types"`
 	Lyrics             string         `db:"lyrics"`
 	ABC                sql.NullString `db:"abc"`
 }
@@ -37,8 +53,10 @@ type ChanteyJson struct {
 	TuneIDs            []string `json:"tune-ids"`
 	CollectionID       string   `json:"collection-id"`
 	CollectionLocation int      `json:"collection-location"`
+	LocationType       string   `json:"location-type"`
 	Title              []string `json:"title"`
 	Themes             []string `json:"themes"`
+	Types              []string `json:"types"`
 	Lyrics             []string `json:"lyrics"`
 	ABC                []string `json:"ABC"`
 }
