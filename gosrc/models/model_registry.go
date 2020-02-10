@@ -1,8 +1,9 @@
 package models
 
-func GetModelDefinitions(path string, dialect SqlDialect) []*DatabaseModel {
+func GetModelDefinitions(dialect *SqlDialect) []*DatabaseModel {
 	return []*DatabaseModel{
-		LoadChanteyConfig(path, dialect),
-		LoadCollectionConfig(path, dialect),
+		LoadChanteyConfig(dialect),
+		LoadCollectionConfig(dialect),
+		LoadPersonConfig(dialect),
 	}
 }

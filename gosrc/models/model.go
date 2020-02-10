@@ -1,16 +1,8 @@
 package models
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"strings"
 )
-
-const (
-	DIALECT_SQLITE = iota
-)
-
-type SqlDialect int
 
 type DatabaseModel struct {
 	configFile       string
@@ -19,22 +11,18 @@ type DatabaseModel struct {
 }
 
 type ModelConfig struct {
-	Create      []string `json:"create"`
-	Constraints []string `json:"constraints"`
+	Create      string
+	Constraints string
 }
 
-func NewDatabaseModel(fileName string, dialect SqlDialect) *DatabaseModel {
-	dialects := make(map[SqlDialect]func() map[string]string)
-	dialects[DIALECT_SQLITE] = SQLITE_TEMPLATE
+type SqlDialect struct {
+	replacements map[string]string
+}
 
-	file, _ := ioutil.ReadFile(fileName)
-	config := ModelConfig{}
-	_ = json.Unmarshal([]byte(file), &config)
-
-	currentDialect := dialects[dialect]()
+func NewDatabaseModel(dialect *SqlDialect, config ModelConfig) *DatabaseModel {
 	return &DatabaseModel{
-		createScript:     processScript(config.Create, currentDialect),
-		constraintScript: processScript(config.Constraints, currentDialect),
+		createScript:     processScript(config.Create, dialect.replacements),
+		constraintScript: processScript(config.Constraints, dialect.replacements),
 	}
 }
 
@@ -46,17 +34,19 @@ func (model *DatabaseModel) ConstraintScript() string {
 	return model.constraintScript
 }
 
-func processScript(script []string, dialect map[string]string) string {
-	result := strings.Join(script, "\n")
+func processScript(script string, dialect map[string]string) string {
+	result := script
 	for k, v := range dialect {
 		result = strings.ReplaceAll(result, k, v)
 	}
 	return result
 }
 
-func SQLITE_TEMPLATE() map[string]string {
-	return map[string]string{
-		"$TEXT": "TEXT",
-		"$INT":  "INTEGER",
+func SQLITE3_DIALECT() *SqlDialect {
+	return &SqlDialect{
+		replacements: map[string]string{
+			"$TEXT": "TEXT",
+			"$INT":  "INTEGER",
+		},
 	}
 }

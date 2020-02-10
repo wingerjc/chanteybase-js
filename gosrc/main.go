@@ -34,7 +34,8 @@ func main() {
 		log.Fatalf("Couldn't open DB: %s", err.Error())
 	}
 
-	modelDefs := models.GetModelDefinitions(config.ConfigDirectory, models.DIALECT_SQLITE)
+	log.Printf("config dir %s", config.ConfigDirectory)
+	modelDefs := models.GetModelDefinitions(models.SQLITE3_DIALECT())
 	for _, s := range modelDefs {
 		log.Print(s.CreateScript())
 		sqlDB.Exec(s.CreateScript())

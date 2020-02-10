@@ -1,12 +1,21 @@
 package models
 
 import (
-	"path/filepath"
 	"strings"
 )
 
-func LoadCollectionConfig(path string, dialect SqlDialect) *DatabaseModel {
-	return NewDatabaseModel(filepath.Join(path, "collection.json"), dialect)
+func LoadCollectionConfig(dialect *SqlDialect) *DatabaseModel {
+	conf := ModelConfig{
+		Create: `CREATE TABLE IF NOT EXISTS collection (
+		id $TEXT PRIMARY KEY,
+		title $TEXT NOT NULL,
+		volume $INT NOT NULL,
+		publication_year $INT NOT NULL,
+		collector_id $TEXT NOT NULL
+		);`,
+		Constraints: "",
+	}
+	return NewDatabaseModel(dialect, conf)
 }
 
 type Collection struct {
