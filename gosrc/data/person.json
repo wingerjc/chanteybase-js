@@ -1,10 +1,14 @@
 [
     {
+        "group-name":"",
         "first-name":"Joanna",
-        "last-name":"Colcord"
+        "last-name":"Colcord",
+        "clarifier":""
     },
     {
+        "group-name":"",
         "first-name":"Ned",
-        "last-name":"Halyard"
+        "last-name":"Halyard",
+        "clarifier":""
     }
 ]

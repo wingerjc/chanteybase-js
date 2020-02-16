@@ -32,13 +32,13 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	if err != nil {
 		log.Printf("Error loading people file %s | %s", filePath, err.Error)
 	}
-	peopleJson := make([]PersonJson, 0)
-	err = json.Unmarshal(data, &peopleJson)
+	peopleJSON := make([]PersonJson, 0)
+	err = json.Unmarshal(data, &peopleJSON)
 	if err != nil {
 		log.Printf("Error parsing people file %s", err.Error)
 	}
-	people := make([]*Person, 0, len(peopleJson))
-	for _, p := range peopleJson {
+	people := make([]*Person, 0, len(peopleJSON))
+	for _, p := range peopleJSON {
 		people = append(people, p.ToDBPerson())
 	}
 
@@ -47,13 +47,13 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	if err != nil {
 		log.Printf("Error loading collections file %s | %s", filePath, err.Error)
 	}
-	collectionsJson := make([]CollectionJson, 0)
-	err = json.Unmarshal(data, &collectionsJson)
+	collectionsJSON := make([]CollectionJson, 0)
+	err = json.Unmarshal(data, &collectionsJSON)
 	if err != nil {
 		log.Printf("Error parsing collections file %s", err.Error)
 	}
-	collections := make([]*Collection, 0, len(collectionsJson))
-	for _, c := range collectionsJson {
+	collections := make([]*Collection, 0, len(collectionsJSON))
+	for _, c := range collectionsJSON {
 		collections = append(collections, c.ToDBCollection())
 	}
 
@@ -62,13 +62,13 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	if err != nil {
 		log.Printf("Error loading chantey file %s | %s", filePath, err.Error)
 	}
-	chanteysJson := make([]ChanteyJson, 0)
-	err = json.Unmarshal(data, &chanteysJson)
+	chanteysJSON := make([]ChanteyJson, 0)
+	err = json.Unmarshal(data, &chanteysJSON)
 	if err != nil {
 		log.Printf("Error parsing chantey file %s", err.Error)
 	}
-	chanteys := make([]*Chantey, 0, len(chanteysJson))
-	for _, p := range chanteysJson {
+	chanteys := make([]*Chantey, 0, len(chanteysJSON))
+	for _, p := range chanteysJSON {
 		chanteys = append(chanteys, p.ToDBChantey())
 	}
 

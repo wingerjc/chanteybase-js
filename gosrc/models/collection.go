@@ -12,6 +12,9 @@ func LoadCollectionConfig(dialect *SqlDialect) *DatabaseModel {
 		volume $INT NOT NULL,
 		publication_year $INT NOT NULL,
 		collector_id $TEXT NOT NULL
+		CONSTRAINT collector_fk,
+		  FOREIGN KEY (collector_id)
+		  REFERENCES person(id)
 		);`,
 		Constraints: "",
 	}

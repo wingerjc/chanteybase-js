@@ -16,7 +16,8 @@ type ModelConfig struct {
 }
 
 type SqlDialect struct {
-	replacements map[string]string
+	replaceInsertPrefix string
+	replacements        map[string]string
 }
 
 func NewDatabaseModel(dialect *SqlDialect, config ModelConfig) *DatabaseModel {
@@ -44,6 +45,7 @@ func processScript(script string, dialect map[string]string) string {
 
 func SQLITE3_DIALECT() *SqlDialect {
 	return &SqlDialect{
+		replaceInsertPrefix: "INSERT OR REPLACE ",
 		replacements: map[string]string{
 			"$TEXT": "TEXT",
 			"$INT":  "INTEGER",

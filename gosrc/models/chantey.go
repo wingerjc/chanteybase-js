@@ -23,13 +23,20 @@ func LoadChanteyConfig(dialect *SqlDialect) *DatabaseModel {
 		Create: `CREATE TABLE IF NOT EXISTS chantey(
        id $TEXT PRIMARY KEY,
        tune_ids $TEXT NOT NULL,
-       collection_id $TEXT NOT NULL,
+	   collection_id $TEXT NOT NULL,
+	   performer_id $TEXT NOT NULL,
        collection_location INTEGER,
        title $TEXT NOT NULL,
 	   themes $TEXT NOT NULL,
 	   types $TEXT NOT NULL,
        lyrics $TEXT NOT NULL,
-       abc $TEXT
+	   abc $TEXT,
+	   CONSTRAINT perfomer_fk
+		 FOREIGN KEY (performer_id)
+		 REFERENCES person(id),
+	   CONSTRAINT collection_fk
+		 FOREIGN KEY (collection_id)
+		 REFERENCES collection(id)
        );`,
 		Constraints: "",
 	}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -35,8 +34,9 @@ func main() {
 		log.Fatalf("Couldn't open DB: %s", err.Error())
 	}
 
+	dialect := models.SQLITE3_DIALECT()
 	log.Printf("config dir %s", config.ConfigDirectory)
-	modelDefs := models.GetModelDefinitions(models.SQLITE3_DIALECT())
+	modelDefs := models.GetModelDefinitions(dialect)
 	for _, s := range modelDefs {
 		log.Print(s.CreateScript())
 		sqlDB.Exec(s.CreateScript())
@@ -47,7 +47,10 @@ func main() {
 	}
 
 	data := models.GetDataFromJson(config.DataDirectory, nil)
-	fmt.Println(len(data.People))
+	err = models.WritePeople(sqlDB, data.People, *dialect)
+	if err != nil {
+		log.Fatalf("Couldn't insert people in DB: %s", err.Error())
+	}
 }
 
 type Config struct {

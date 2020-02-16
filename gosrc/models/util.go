@@ -1,9 +1,9 @@
 package models
 
 import (
+	"database/sql"
 	"regexp"
 	"strings"
-	"database/sql"
 )
 
 var NON_ALPHA_REGEX, _ = regexp.Compile("[[^:alnum:]]+")
@@ -24,4 +24,18 @@ func toNullString(s string) sql.NullString {
 
 func toNullInt(i int) sql.NullInt64 {
 	return sql.NullInt64{Int64: int64(i), Valid: true}
+}
+
+func emptyToUnknown(s string) string {
+	if len(s) == 0 {
+		return "UNKNOWN"
+	}
+	return s
+}
+
+func emptyToNA(s string) string {
+	if len(s) == 0 {
+		return "N/A"
+	}
+	return s
 }
