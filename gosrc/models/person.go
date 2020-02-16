@@ -16,7 +16,8 @@ func LoadPersonConfig(dialect *SqlDialect) *DatabaseModel {
 		group_name $TEXT NOT NULL,
 		first_name $TEXT NOT NULL,
 		last_name $TEXT NOT NULL,
-		clarifier $TEXT NOT NULL
+		clarifier $TEXT NOT NULL,
+		note $TEXT NOT NULL
 		);`,
 		Constraints: "",
 	}
@@ -29,12 +30,13 @@ type Person struct {
 	FirstName string `db:"first_name"`
 	LastName  string `db:"last_name"`
 	Clarifier string `db:"clarifier"`
+	Note      string `db:"note"`
 }
 
 func (p *Person) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 	statement := dialect.replaceInsertPrefix + `INTO
-	person (id, group_name, first_name, last_name, clarifier)
-	VALUES ($1, $2, $3, $4, $5);`
+	person (id, group_name, first_name, last_name, clarifier, note)
+	VALUES ($1, $2, $3, $4, $5, $6);`
 	fmt.Println(p)
 	return tx.Exec(
 		statement,
@@ -43,6 +45,7 @@ func (p *Person) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 		p.FirstName,
 		p.LastName,
 		p.Clarifier,
+		p.Note,
 	)
 }
 
@@ -65,6 +68,7 @@ type PersonJson struct {
 	FirstName string `json:"first-name"`
 	LastName  string `json:"last-name"`
 	Clarifier string `json:"clarifier"`
+	Note      string `json:"note"`
 }
 
 func (p *PersonJson) ToDBPerson() *Person {
@@ -74,6 +78,7 @@ func (p *PersonJson) ToDBPerson() *Person {
 		FirstName: p.FirstName,
 		LastName:  p.LastName,
 		Clarifier: p.Clarifier,
+		Note:      p.Note,
 	}
 }
 

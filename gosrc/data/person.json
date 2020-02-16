@@ -1,14 +1,23 @@
 [
     {
+        "group-name":"UNKNOWN",
+        "first-name":"",
+        "last-name":"",
+        "clarifier":"",
+        "note":"Special value for when person is not available."
+    },
+    {
         "group-name":"",
         "first-name":"Joanna",
         "last-name":"Colcord",
-        "clarifier":""
+        "clarifier":"",
+        "note":""
     },
     {
         "group-name":"",
         "first-name":"Ned",
         "last-name":"Halyard",
-        "clarifier":""
+        "clarifier":"",
+        "note":""
     }
 ]
