@@ -1,5 +1,6 @@
 {
     "sql-engine":"sqlite3",
     "config-dir":"./config/",
-    "data-dir":"./data/"
+    "data-dir":"./data/",
+    "db-file":"./chanteys.db"
 }

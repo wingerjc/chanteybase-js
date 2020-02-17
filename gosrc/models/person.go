@@ -25,12 +25,12 @@ func LoadPersonConfig(dialect *SqlDialect) *DatabaseModel {
 }
 
 type Person struct {
-	ID        string `db:"id"`
-	GroupName string `db:"group_name"`
-	FirstName string `db:"first_name"`
-	LastName  string `db:"last_name"`
-	Clarifier string `db:"clarifier"`
-	Note      string `db:"note"`
+	ID        string `db:"id" json:"id"`
+	GroupName string `db:"group_name" json:"group-name"`
+	FirstName string `db:"first_name" json:"first-name"`
+	LastName  string `db:"last_name" json:"last-name"`
+	Clarifier string `db:"clarifier" json:"clarifier"`
+	Note      string `db:"note" json:"note"`
 }
 
 func (p *Person) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {

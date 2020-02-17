@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	//"database/sql"
 
+	"local.dev/actions"
 	"local.dev/models"
 
 	"github.com/jmoiron/sqlx"
@@ -23,12 +25,11 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	s := &server{}
-	http.Handle("/", s)
-	//log.Fatal(http.ListenAndServe(":8080",nil))
+	runServer := flag.Bool("server", false, "Set true to run as an http server.")
+	flag.Parse()
 
 	config := loadConfig()
-	sqlDB, err := sqlx.Open("sqlite3", "./chanteys.db")
+	sqlDB, err := sqlx.Open("sqlite3", config.DBFile)
 	defer sqlDB.Close()
 	if err != nil {
 		log.Fatalf("Couldn't open DB: %s", err.Error())
@@ -51,12 +52,25 @@ func main() {
 	if err != nil {
 		log.Fatalf("Couldn't insert people in DB: %s", err.Error())
 	}
+
+	if *runServer {
+		serverMain(sqlDB)
+	}
+
+}
+
+func serverMain(db *sqlx.DB) {
+	s := &server{}
+	http.Handle("/", s)
+	http.HandleFunc(actions.GetPersonByIDURL, actions.GetPersonByID(db))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 type Config struct {
 	SqlDialect      string `json:"sql-dialect"`
 	ConfigDirectory string `json:"config-dir"`
 	DataDirectory   string `json:"data-dir"`
+	DBFile          string `json:"db-file"`
 }
 
 // TODO: pass config filename.
