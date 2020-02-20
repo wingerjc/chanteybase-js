@@ -7,8 +7,6 @@ import (
 	"log"
 	"net/http"
 
-	//"database/sql"
-
 	"local.dev/actions"
 	"local.dev/models"
 
@@ -51,6 +49,11 @@ func main() {
 	err = models.WritePeople(sqlDB, data.People, *dialect)
 	if err != nil {
 		log.Fatalf("Couldn't insert people in DB: %s", err.Error())
+	}
+
+	err = models.WriteCollections(sqlDB, data.Collections, *dialect)
+	if err != nil {
+		log.Fatalf("Couldn't insert collections in DB: %s", err.Error())
 	}
 
 	if *runServer {

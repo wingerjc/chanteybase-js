@@ -45,12 +45,12 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	filePath = path.Join(dataPath, "collection.json")
 	data, err = ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Printf("Error loading collections file %s | %s", filePath, err.Error)
+		log.Printf("Error loading collections file %s | %s", filePath, err.Error())
 	}
 	collectionsJSON := make([]CollectionJson, 0)
 	err = json.Unmarshal(data, &collectionsJSON)
 	if err != nil {
-		log.Printf("Error parsing collections file %s", err.Error)
+		log.Printf("Error parsing collections file %s", err.Error())
 	}
 	collections := make([]*Collection, 0, len(collectionsJSON))
 	for _, c := range collectionsJSON {
