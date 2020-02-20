@@ -63,6 +63,7 @@ func serverMain(db *sqlx.DB) {
 	s := &server{}
 	http.Handle("/", s)
 	http.HandleFunc(actions.GetPersonByIDURL, actions.GetPersonByID(db))
+	http.HandleFunc(actions.GetPersonIDsURL, actions.GetPersonIDs(db))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

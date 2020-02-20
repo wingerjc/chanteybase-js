@@ -10,6 +10,7 @@ import (
 
 const (
 	GetPersonByIDURL = "/person/"
+	GetPersonIDsURL  = "/person-ids/"
 )
 
 func GetPersonByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
@@ -28,6 +29,25 @@ func GetPersonByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 		js, err = json.Marshal(data)
 		if err != nil {
 			writeResp(w, 500, "Could not format person JSON")
+			return
+		}
+		w.Write(js)
+	}
+}
+
+func GetPersonIDs(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		params := parseParams(req.URL.EscapedPath(), GetPersonIDsURL)
+		searchString := params[0]
+		data, err := models.GetPersonIDs(db, searchString)
+		if err != nil {
+			writeResp(w, 500, "Error Fetching person object IDs")
+			return
+		}
+		var js []byte
+		js, err = json.Marshal(data)
+		if err != nil {
+			writeResp(w, 500, "Could not convert ID list to JSON")
 			return
 		}
 		w.Write(js)
