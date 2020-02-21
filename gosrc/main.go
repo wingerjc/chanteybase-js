@@ -56,6 +56,11 @@ func main() {
 		log.Fatalf("Couldn't insert collections in DB: %s", err.Error())
 	}
 
+	err = models.WriteChanteys(sqlDB, data.Chanteys, *dialect)
+	if err != nil {
+		log.Fatalf("Couldn't insert chanteys in DB: %s", err.Error())
+	}
+
 	if *runServer {
 		serverMain(sqlDB)
 	}
