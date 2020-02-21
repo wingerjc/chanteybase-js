@@ -7,10 +7,11 @@ import (
 )
 
 var NON_ALPHA_REGEX, _ = regexp.Compile("[[^:alnum:]]+")
+var WHITESPACE_REGEX, _ = regexp.Compile("[[:space:]]+")
 
 func convertKeyString(base []string, maxKeyLen int) string {
 	title := strings.ToUpper(strings.Join(base, ""))
-	title = NON_ALPHA_REGEX.ReplaceAllString(title, "")
+	title = WHITESPACE_REGEX.ReplaceAllString(NON_ALPHA_REGEX.ReplaceAllString(title, ""), "")
 	keyLen := maxKeyLen
 	if len(title) < keyLen {
 		keyLen = len(title)

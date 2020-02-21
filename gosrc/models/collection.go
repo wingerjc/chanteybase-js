@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -17,7 +18,10 @@ func LoadCollectionConfig(dialect *SqlDialect) *DatabaseModel {
 		volume $INT NOT NULL,
 		publication_year $INT NOT NULL,
 		edition $INT NOT NULL,
-		collector_id $TEXT NOT NULL
+		collector_id $TEXT NOT NULL,
+		oclc $TEXT NOT NULL,
+		lccn $TEXT NOT NULL,
+		isbn $TEXT NOT NULL,
 		CONSTRAINT collector_fk,
 		  FOREIGN KEY (collector_id)
 		  REFERENCES person(id)
@@ -34,6 +38,9 @@ type Collection struct {
 	PublicationYear int    `db:"publication_year"`
 	Edition         int    `db:"edition"`
 	CollectorID     string `db:"collector_id"`
+	OCLC            string `db:"oclc"`
+	LCCN            string `db:"lccn"`
+	ISBN            string `db:"isbn"`
 }
 
 type CollectionJson struct {
@@ -42,6 +49,9 @@ type CollectionJson struct {
 	PublicationYear int      `json:"publication-year"`
 	Edition         int      `json:"edition"`
 	CollectorID     string   `json:"collector-id"`
+	OCLC            string   `json:"oclc"`
+	LCCN            string   `json:"lccn"`
+	ISBN            string   `json:"isbn"`
 }
 
 func (c *CollectionJson) ToDBCollection() *Collection {
@@ -52,6 +62,9 @@ func (c *CollectionJson) ToDBCollection() *Collection {
 		PublicationYear: c.PublicationYear,
 		Edition:         c.Edition,
 		CollectorID:     c.CollectorID,
+		OCLC:            c.OCLC,
+		LCCN:            c.LCCN,
+		ISBN:            c.ISBN,
 	}
 }
 
@@ -59,7 +72,7 @@ func (c *CollectionJson) ID() string {
 	b := strings.Builder{}
 	b.WriteString(convertKeyString(c.Title, 8))
 	b.WriteString(".")
-	b.WriteString(string(c.PublicationYear))
+	b.WriteString(strconv.Itoa(c.PublicationYear))
 	if c.Volume != 0 {
 		b.WriteString(".")
 		b.WriteString(string(c.Volume))
@@ -69,8 +82,8 @@ func (c *CollectionJson) ID() string {
 
 func (c *Collection) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 	statement := dialect.replaceInsertPrefix + `INTO
-	collection (id, title, volume, publication_year, edition, collector_id)
-	VALUES ($1, $2, $3, $4, $5, $6);`
+	collection (id, title, volume, publication_year, edition, collector_id, oclc, lccn, isbn)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`
 	fmt.Println(c)
 	return tx.Exec(
 		statement,
@@ -80,6 +93,9 @@ func (c *Collection) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 		c.PublicationYear,
 		c.Edition,
 		c.CollectorID,
+		c.OCLC,
+		c.LCCN,
+		c.ISBN,
 	)
 }
 
