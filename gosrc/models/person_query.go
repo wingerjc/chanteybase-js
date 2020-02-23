@@ -1,7 +1,6 @@
 package models
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -19,14 +18,9 @@ func GetPersonByID(db *sqlx.DB, id string) ([]Person, error) {
 }
 
 func GetPersonIDs(db *sqlx.DB, pattern string) ([]string, error) {
-	replacePattern, err := regexp.Compile(`[^A-Za-z0-9.]+`)
-	if err != nil {
-		return nil, err
-	}
 	result := []string{}
-
-	searchString := "%" + strings.ToUpper(replacePattern.ReplaceAllString(pattern, "")) + "%"
+	searchString := "%" + strings.ToUpper(NON_ID_CHAR_REGEX.ReplaceAllString(pattern, "")) + "%"
 	sql := `SELECT id FROM person WHERE id like $1;`
-	err = db.Select(&result, sql, searchString)
+	err := db.Select(&result, sql, searchString)
 	return result, err
 }

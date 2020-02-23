@@ -51,18 +51,18 @@ func LoadChanteyConfig(dialect *SqlDialect) *DatabaseModel {
 }
 
 type Chantey struct {
-	ID                 string `db:"id"`
-	TuneIDs            string `db:"tune_ids"`
-	CollectionID       string `db:"collection_id"`
-	CollectionLocation int    `db:"collection_location"`
-	LocationType       string `db:"location_type"`
-	Version            string `db:"version"`
-	PerformerId        string `db:"performer_id"`
-	Title              string `db:"title"`
-	Themes             string `db:"themes"`
-	Types              string `db:"types"`
-	Lyrics             string `db:"lyrics"`
-	ABC                string `db:"abc"`
+	ID                 string `db:"id" json:"id"`
+	TuneIDs            string `db:"tune_ids" json:"tune-ids"`
+	CollectionID       string `db:"collection_id" json:"collection-id"`
+	CollectionLocation int    `db:"collection_location" json:"collection-location"`
+	LocationType       string `db:"location_type" json:"location-type"`
+	Version            string `db:"version" json:"version"`
+	PerformerId        string `db:"performer_id" json:"performer-id"`
+	Title              string `db:"title" json:"title"`
+	Themes             string `db:"themes" json:"themes"`
+	Types              string `db:"types" json:"types"`
+	Lyrics             string `db:"lyrics" json:"lyrics"`
+	ABC                string `db:"abc" json:"abc"`
 }
 
 func (c *Chantey) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {

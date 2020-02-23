@@ -32,15 +32,15 @@ func LoadCollectionConfig(dialect *SqlDialect) *DatabaseModel {
 }
 
 type Collection struct {
-	ID              string `db:"id"`
-	Title           string `db:"title"`
-	Volume          int    `db:Volume`
-	PublicationYear int    `db:"publication_year"`
-	Edition         int    `db:"edition"`
-	CollectorID     string `db:"collector_id"`
-	OCLC            string `db:"oclc"`
-	LCCN            string `db:"lccn"`
-	ISBN            string `db:"isbn"`
+	ID              string `db:"id" json:"id"`
+	Title           string `db:"title" json:"title"`
+	Volume          int    `db:"volume" json:"volume"`
+	PublicationYear int    `db:"publication_year" json:"publication-year"`
+	Edition         int    `db:"edition" json:"edition"`
+	CollectorID     string `db:"collector_id" json:"collector-id"`
+	OCLC            string `db:"oclc" json:"oclc"`
+	LCCN            string `db:"lccn" json:"lccn"`
+	ISBN            string `db:"isbn" json:"isbn"`
 }
 
 type CollectionJson struct {

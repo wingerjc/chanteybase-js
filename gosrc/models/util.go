@@ -8,6 +8,7 @@ import (
 
 var NON_ALPHA_REGEX, _ = regexp.Compile("[[^:alnum:]]+")
 var WHITESPACE_REGEX, _ = regexp.Compile("[[:space:]]+")
+var NON_ID_CHAR_REGEX, _ = regexp.Compile(`[^A-Za-z0-9.]+`)
 
 func convertKeyString(base []string, maxKeyLen int) string {
 	title := strings.ToUpper(strings.Join(base, ""))
@@ -39,4 +40,8 @@ func emptyToNA(s string) string {
 		return "N/A"
 	}
 	return s
+}
+
+func dbSearchString(s string) string {
+	return "%" + s + "%"
 }
