@@ -9,6 +9,7 @@ import (
 
 func GetModelDefinitions(dialect *SqlDialect) []*DatabaseModel {
 	return []*DatabaseModel{
+		LoadConstantsConfig(dialect),
 		LoadChanteyConfig(dialect),
 		LoadCollectionConfig(dialect),
 		LoadPersonConfig(dialect),
@@ -77,4 +78,23 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 		Collections: collections,
 		Chanteys:    chanteys,
 	}
+}
+
+func LoadConstantsConfig(dialect *SqlDialect) *DatabaseModel {
+	conf := ModelConfig{
+		Create: `CREATE TABLE IF NOT EXISTS location_type(type $TEXT PRIMARY KEY);
+			CREATE TABLE IF NOT EXISTS chantey_type(type $TEXT PRIMARY KEY);`,
+		Insert: `INSERT INTO TABLE location_type(type) VALUES
+		  ('PAGE'),
+		  ('SECONDS'),
+		  ('TRACK');
+		INSERT INTO TABLE chantey_type(type) VALUES
+		  ('SHORT_DRAG'),
+		  ('BUNTING'),
+		  ('HALYARD'),
+		  ('FORECASTLE'),
+		  ('CAPSTAN');`,
+	}
+
+	return NewDatabaseModel(dialect, conf)
 }

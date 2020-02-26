@@ -1,6 +1,6 @@
 [
     {
-        "tune-ids": [],
+        "tune-ids": ["R.485"],
         "collection-id": "SONGSOFA.1964",
         "collection-location":36,
         "location-type":"PAGE",
@@ -8,10 +8,62 @@
         "performer-id":"UNKNOWN",
         "title": ["Boney"],
         "themes": ["Napleon"],
-        "types": ["SHORT_HAUL"],
+        "types": ["SHORT_DRAG"],
         "lyrics": [
-            "Boney was a-warrior, away-a-ah,"
+            "Boney was a war-ri-or,",
+            "  A-way ay-yah!",
+            "A warrior and a tar-ri-er,",
+            "  John Fran-swor!",
+            "",
+            "Boney fought the Roo-shi-ans,",
+            "Boney fought the Proo-shi-ans.",
+            "",
+            "Moscow was a-blazing,",
+            "And Boney was a-raging.",
+            "",
+            "Boney went to Elbow,",
+            "Boney he came back again.",
+            "",
+            "Boney went to Waterloo,",
+            "There he got his overthrow.",
+            "",
+            "Then they took him off again",
+            "Aboard the Billy Ruffian.",
+            "",
+            "Boney broke his heart and died",
+            "Away in St. Helena.",
+            "",
+            "Give her the topgallantsails;",
+            "It's a weary way to Baltimore.",
+            "",
+            "Driver her, captain, drive her,",
+            "And bust the chafing leather."
         ],
-        "abc":[]
+        "abc":[
+            "T:Boney",
+            "K:Eb",
+            "M:6/8",
+            "\"Eb\"B2G E2G|B2G E2G|B3 \"C7\"c3|\"Fm\"A3 z2|]",
+            "w:Bo-ney was a war-ri-or, Aw-ay ay-yah!",
+            "A|A2G F2G|A2B Hc3|B3 \"Bb7\"B3|\"Eb\"G6|]",
+            "w:A War-rior and a tar-ri-er, John Fran-swor!"
+        ]
+    },
+    {
+        "tune-ids": ["R.809"],
+        "collection-id": "SONGSOFA.1964",
+        "collection-location":37,
+        "location-type":"PAGE",
+        "version":"",
+        "performer-id":"UNKNOWN",
+        "title": ["Haul Away, Joe"],
+        "themes": ["Saint Patrick", "Women"],
+        "types": ["SHORT_DRAG"],
+        "lyrics": [
+            ""
+        ],
+        "abc":[
+
+        ]
     }
 ]

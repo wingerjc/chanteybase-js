@@ -26,25 +26,28 @@ const (
 func LoadChanteyConfig(dialect *SqlDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS chantey(
-       id $TEXT PRIMARY KEY,
-       tune_ids $TEXT NOT NULL,
-	   collection_id $TEXT NOT NULL,
-	   collection_location INTEGER NOT NULL,
-	   location_type $TEXT NOT NULL,
-	   version $TEXT NOT NULL,
-	   performer_id $TEXT NOT NULL,
-       title $TEXT NOT NULL,
-	   themes $TEXT NOT NULL,
-	   types $TEXT NOT NULL,
-       lyrics $TEXT NOT NULL,
-	   abc $TEXT NOT NULL,
-	   CONSTRAINT perfomer_fk
-		 FOREIGN KEY (performer_id)
-		 REFERENCES person(id),
-	   CONSTRAINT collection_fk
-		 FOREIGN KEY (collection_id)
-		 REFERENCES collection(id)
-       );`,
+        id $TEXT PRIMARY KEY,
+        tune_ids $TEXT NOT NULL,
+	    collection_id $TEXT NOT NULL,
+	    collection_location INTEGER NOT NULL,
+	    location_type $TEXT NOT NULL,
+	    version $TEXT NOT NULL,
+	    performer_id $TEXT NOT NULL,
+        title $TEXT NOT NULL,
+	    themes $TEXT NOT NULL,
+	    types $TEXT NOT NULL,
+        lyrics $TEXT NOT NULL,
+	    abc $TEXT NOT NULL,
+	    CONSTRAINT perfomer_fk
+		  FOREIGN KEY (performer_id)
+		  REFERENCES person(id),
+	    CONSTRAINT collection_fk
+		  FOREIGN KEY (collection_id)
+		  REFERENCES collection(id),
+	    CONSTRAINT location_type_fk
+		  FOREIGN KEY (location_type)
+		  REFERENCES location_type(type)
+    	);`,
 		Constraints: "",
 	}
 	return NewDatabaseModel(dialect, conf)

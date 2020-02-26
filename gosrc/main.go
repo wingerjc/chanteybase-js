@@ -44,6 +44,10 @@ func main() {
 		log.Print(s.ConstraintScript())
 		sqlDB.Exec(s.ConstraintScript())
 	}
+	for _, s := range modelDefs {
+		log.Print(s.InsertScript())
+		sqlDB.Exec(s.InsertScript())
+	}
 
 	data := models.GetDataFromJson(config.DataDirectory, nil)
 	err = models.WritePeople(sqlDB, data.People, *dialect)

@@ -8,11 +8,13 @@ type DatabaseModel struct {
 	configFile       string
 	createScript     string
 	constraintScript string
+	insertScript     string
 }
 
 type ModelConfig struct {
 	Create      string
 	Constraints string
+	Insert      string
 }
 
 type SqlDialect struct {
@@ -24,6 +26,7 @@ func NewDatabaseModel(dialect *SqlDialect, config ModelConfig) *DatabaseModel {
 	return &DatabaseModel{
 		createScript:     processScript(config.Create, dialect.replacements),
 		constraintScript: processScript(config.Constraints, dialect.replacements),
+		insertScript:     processScript(config.Insert, dialect.replacements),
 	}
 }
 
@@ -33,6 +36,10 @@ func (model *DatabaseModel) CreateScript() string {
 
 func (model *DatabaseModel) ConstraintScript() string {
 	return model.constraintScript
+}
+
+func (model *DatabaseModel) InsertScript() string {
+	return model.insertScript
 }
 
 func processScript(script string, dialect map[string]string) string {
