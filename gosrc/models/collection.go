@@ -10,7 +10,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func LoadCollectionConfig(dialect *SqlDialect) *DatabaseModel {
+// LoadCollectionConfig provides the DatabaseConfig for the collection table.
+func LoadCollectionConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS collection (
 		id $TEXT PRIMARY KEY,
@@ -31,6 +32,7 @@ func LoadCollectionConfig(dialect *SqlDialect) *DatabaseModel {
 	return NewDatabaseModel(dialect, conf)
 }
 
+// Collection is a collection entry for outgoing JSON and DB storage.
 type Collection struct {
 	ID              string `db:"id" json:"id"`
 	Title           string `db:"title" json:"title"`
@@ -43,7 +45,8 @@ type Collection struct {
 	ISBN            string `db:"isbn" json:"isbn"`
 }
 
-type CollectionJson struct {
+// CollectionJSON is the incoming definition for collection entries.
+type CollectionJSON struct {
 	Title           []string `json:"title"`
 	Volume          int      `json:"volume"`
 	PublicationYear int      `json:"publication-year"`
@@ -54,7 +57,8 @@ type CollectionJson struct {
 	ISBN            string   `json:"isbn"`
 }
 
-func (c *CollectionJson) ToDBCollection() *Collection {
+// ToDBCollection converts the incoming definition to a DB definition.
+func (c *CollectionJSON) ToDBCollection() *Collection {
 	return &Collection{
 		ID:              c.ID(),
 		Title:           strings.Join(c.Title, "\n"),
@@ -68,7 +72,8 @@ func (c *CollectionJson) ToDBCollection() *Collection {
 	}
 }
 
-func (c *CollectionJson) ID() string {
+// ID calculates the ID for this incoming definition.
+func (c *CollectionJSON) ID() string {
 	b := strings.Builder{}
 	b.WriteString(convertKeyString(c.Title, 8))
 	b.WriteString(".")
@@ -80,7 +85,8 @@ func (c *CollectionJson) ID() string {
 	return b.String()
 }
 
-func (c *Collection) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
+// Write this entry to the database.
+func (c *Collection) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 	statement := dialect.replaceInsertPrefix + `INTO
 	collection (id, title, volume, publication_year, edition, collector_id, oclc, lccn, isbn)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`
@@ -99,7 +105,8 @@ func (c *Collection) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 	)
 }
 
-func WriteCollections(db *sqlx.DB, collections []*Collection, dialect SqlDialect) error {
+// WriteCollections writes all the given collections to the given db.
+func WriteCollections(db *sqlx.DB, collections []*Collection, dialect SQLDialect) error {
 	tx, err := db.BeginTx(context.TODO(), &sql.TxOptions{ReadOnly: false})
 	if err != nil {
 		return err

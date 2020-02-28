@@ -10,10 +10,13 @@ import (
 )
 
 const (
-	GetChanteyByIDURL           = "/chantey/"
+	// GetChanteyByIDURL is the URL prefix for searching chanteys by ID
+	GetChanteyByIDURL = "/chantey/"
+	// GetChanteyByCollectionIDURL is the URL for searching chanteys by collection ID
 	GetChanteyByCollectionIDURL = "/chantey-collection/"
 )
 
+// ChanteyByID is an HTTPFunc for searching chanteys by ID.
 func ChanteyByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetChanteyByIDURL)
@@ -37,6 +40,7 @@ func ChanteyByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// ChanteyByCollectionID is an HTTPFunc for searching chanteys by collection ID.
 func ChanteyByCollectionID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetChanteyByCollectionIDURL)

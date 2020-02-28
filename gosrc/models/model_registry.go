@@ -7,7 +7,7 @@ import (
 	"path"
 )
 
-func GetModelDefinitions(dialect *SqlDialect) []*DatabaseModel {
+func GetModelDefinitions(dialect *SQLDialect) []*DatabaseModel {
 	return []*DatabaseModel{
 		LoadConstantsConfig(dialect),
 		LoadChanteyConfig(dialect),
@@ -27,13 +27,13 @@ type LoadedModelData struct {
 	Chanteys    []*Chantey
 }
 
-func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelData {
+func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelData {
 	filePath := path.Join(dataPath, "person.json")
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		log.Printf("Error loading people file %s | %s", filePath, err.Error)
 	}
-	peopleJSON := make([]PersonJson, 0)
+	peopleJSON := make([]PersonJSON, 0)
 	err = json.Unmarshal(data, &peopleJSON)
 	if err != nil {
 		log.Printf("Error parsing people file %s", err.Error)
@@ -48,7 +48,7 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	if err != nil {
 		log.Printf("Error loading collections file %s | %s", filePath, err.Error())
 	}
-	collectionsJSON := make([]CollectionJson, 0)
+	collectionsJSON := make([]CollectionJSON, 0)
 	err = json.Unmarshal(data, &collectionsJSON)
 	if err != nil {
 		log.Printf("Error parsing collections file %s", err.Error())
@@ -63,7 +63,7 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	if err != nil {
 		log.Printf("Error loading chantey file %s | %s", filePath, err.Error)
 	}
-	chanteysJSON := make([]ChanteyJson, 0)
+	chanteysJSON := make([]ChanteyJSON, 0)
 	err = json.Unmarshal(data, &chanteysJSON)
 	if err != nil {
 		log.Printf("Error parsing chantey file %s", err.Error)
@@ -80,7 +80,7 @@ func GetDataFromJson(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	}
 }
 
-func LoadConstantsConfig(dialect *SqlDialect) *DatabaseModel {
+func LoadConstantsConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS location_type(type $TEXT PRIMARY KEY);
 			CREATE TABLE IF NOT EXISTS chantey_type(type $TEXT PRIMARY KEY);`,

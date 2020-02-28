@@ -9,10 +9,13 @@ import (
 )
 
 const (
+	// GetPersonByIDURL is the URL for searching people by ID
 	GetPersonByIDURL = "/person/"
-	GetPersonIDsURL  = "/person-ids/"
+	// GetPersonIDsURL is the URL for getting all person IDs by partial match
+	GetPersonIDsURL = "/person-ids/"
 )
 
+// GetPersonByID is an HTTPFunc for searching all people by partial ID.
 func GetPersonByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetPersonByIDURL)
@@ -35,6 +38,7 @@ func GetPersonByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// GetPersonIDs is an HTTPFunc for getting all person ID's by partial match.
 func GetPersonIDs(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetPersonIDsURL)

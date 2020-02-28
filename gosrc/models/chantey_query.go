@@ -12,6 +12,7 @@ func chanteyQuery(db *sqlx.DB, sql, searchString string) ([]Chantey, error) {
 	return result, err
 }
 
+// ChanteyByID returns a list of chanteys that have IDs like the search term.
 func ChanteyByID(db *sqlx.DB, idString string) ([]Chantey, error) {
 	return chanteyQuery(
 		db,
@@ -20,6 +21,7 @@ func ChanteyByID(db *sqlx.DB, idString string) ([]Chantey, error) {
 	)
 }
 
+// ChanteyByName returns a list of chanteys that have names like the search term.
 func ChanteyByName(db *sqlx.DB, nameString string) ([]Chantey, error) {
 	return chanteyQuery(
 		db,
@@ -28,6 +30,7 @@ func ChanteyByName(db *sqlx.DB, nameString string) ([]Chantey, error) {
 	)
 }
 
+// ChanteyByCollectionID returns a list of chanteys that have an exact match on collection ID.
 func ChanteyByCollectionID(db *sqlx.DB, collectionID string) ([]Chantey, error) {
 	return chanteyQuery(
 		db,

@@ -49,7 +49,7 @@ func main() {
 		sqlDB.Exec(s.InsertScript())
 	}
 
-	data := models.GetDataFromJson(config.DataDirectory, nil)
+	data := models.GetDataFromJSON(config.DataDirectory, nil)
 	err = models.WritePeople(sqlDB, data.People, *dialect)
 	if err != nil {
 		log.Fatalf("Couldn't insert people in DB: %s", err.Error())
@@ -87,8 +87,9 @@ func serverMain(db *sqlx.DB) {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
+// Config is the basic application configuration that can be read from JSON.
 type Config struct {
-	SqlDialect      string `json:"sql-dialect"`
+	SQLDialect      string `json:"sql-dialect"`
 	ConfigDirectory string `json:"config-dir"`
 	DataDirectory   string `json:"data-dir"`
 	DBFile          string `json:"db-file"`

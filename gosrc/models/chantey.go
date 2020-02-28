@@ -12,18 +12,30 @@ import (
 
 const (
 	// Chantey types
-	TYPE_HALYARD    = "halyard"
-	TYPE_CAPSTAN    = "capstan"
-	TYPE_FOCSLE     = "focsle"
-	TYPE_SHORT_HAUL = "short haul"
-	TYPE_BUNTING    = "bunting"
+
+	// TypeHalyard is the type definition for a halyard chantey.
+	TypeHalyard = "HALYARD"
+	// TypeCapstan is the type definition for a capstan chantey.
+	TypeCapstan = "CAPSTAN"
+	// TypeForecastle is the type definition for a forecastle chantey.
+	TypeForecastle = "FORECASTLE"
+	// TypeShortDrag is the type definition for a short drag chantey.
+	TypeShortDrag = "SHORT_DRAG "
+	// TypeBunting is the type definition for a bunting chantey.
+	TypeBunting = "BUNTING"
+
 	// Location types
-	LOC_PAGE   = "page"
-	LOC_SECONG = "second"
-	LOC_TRACK  = "track"
+
+	// LocationPage is a location type for a paged collection.
+	LocationPage = "PAGE"
+	// LocationSecond is a location type for a timed collection.
+	LocationSecond = "SECOND"
+	// LocationTrack is a location type for a tracked collection.
+	LocationTrack = "TRACK"
 )
 
-func LoadChanteyConfig(dialect *SqlDialect) *DatabaseModel {
+// LoadChanteyConfig provides the database config for the chantey table.
+func LoadChanteyConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS chantey(
         id $TEXT PRIMARY KEY,
@@ -53,6 +65,7 @@ func LoadChanteyConfig(dialect *SqlDialect) *DatabaseModel {
 	return NewDatabaseModel(dialect, conf)
 }
 
+// Chantey encapsulates a Chantey entry for JSON and DB.
 type Chantey struct {
 	ID                 string `db:"id" json:"id"`
 	TuneIDs            string `db:"tune_ids" json:"tune-ids"`
@@ -60,7 +73,7 @@ type Chantey struct {
 	CollectionLocation int    `db:"collection_location" json:"collection-location"`
 	LocationType       string `db:"location_type" json:"location-type"`
 	Version            string `db:"version" json:"version"`
-	PerformerId        string `db:"performer_id" json:"performer-id"`
+	PerformerID        string `db:"performer_id" json:"performer-id"`
 	Title              string `db:"title" json:"title"`
 	Themes             string `db:"themes" json:"themes"`
 	Types              string `db:"types" json:"types"`
@@ -68,7 +81,8 @@ type Chantey struct {
 	ABC                string `db:"abc" json:"abc"`
 }
 
-func (c *Chantey) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
+// Write a chantey into the given DB.
+func (c *Chantey) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 	statement := dialect.replaceInsertPrefix + `INTO
 	chantey (id, tune_ids, collection_id, collection_location, location_type, version, performer_id, title, themes, types, lyrics, abc)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`
@@ -81,7 +95,7 @@ func (c *Chantey) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 		c.CollectionLocation,
 		c.LocationType,
 		c.Version,
-		c.PerformerId,
+		c.PerformerID,
 		c.Title,
 		c.Themes,
 		c.Types,
@@ -90,7 +104,8 @@ func (c *Chantey) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 	)
 }
 
-func WriteChanteys(db *sqlx.DB, chanteys []*Chantey, dialect SqlDialect) error {
+// WriteChanteys writes all the chanteys into the database.
+func WriteChanteys(db *sqlx.DB, chanteys []*Chantey, dialect SQLDialect) error {
 	tx, err := db.BeginTx(context.TODO(), &sql.TxOptions{ReadOnly: false})
 	if err != nil {
 		return err
@@ -104,7 +119,8 @@ func WriteChanteys(db *sqlx.DB, chanteys []*Chantey, dialect SqlDialect) error {
 	return tx.Commit()
 }
 
-type ChanteyJson struct {
+// ChanteyJSON is the input format for a Chantey entry.
+type ChanteyJSON struct {
 	TuneIDs            []string `json:"tune-ids"`
 	CollectionID       string   `json:"collection-id"`
 	CollectionLocation int      `json:"collection-location"`
@@ -118,14 +134,15 @@ type ChanteyJson struct {
 	ABC                []string `json:"ABC"`
 }
 
-func (c *ChanteyJson) ToDBChantey() *Chantey {
+// ToDBChantey converts the input format into a database entry.
+func (c *ChanteyJSON) ToDBChantey() *Chantey {
 	return &Chantey{
 		ID:                 c.ID(),
 		TuneIDs:            strings.Join(c.TuneIDs, "\n"),
 		CollectionID:       c.CollectionID,
 		CollectionLocation: c.CollectionLocation,
 		LocationType:       c.LocationType,
-		PerformerId:        c.PerfomerID,
+		PerformerID:        c.PerfomerID,
 		Title:              strings.Join(c.Title, "\n"),
 		Themes:             strings.Join(c.Themes, "\n"),
 		Types:              strings.Join(c.Types, "\n"),
@@ -134,7 +151,8 @@ func (c *ChanteyJson) ToDBChantey() *Chantey {
 	}
 }
 
-func (c *ChanteyJson) ID() string {
+// ID creates the identifier for this chantey entry.
+func (c *ChanteyJSON) ID() string {
 	b := strings.Builder{}
 	b.WriteString(convertKeyString(c.Title, 8))
 	if c.CollectionLocation >= 0 {

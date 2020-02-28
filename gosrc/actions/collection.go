@@ -10,10 +10,13 @@ import (
 )
 
 const (
-	GetCollectionByIDURL    = "/collection/"
+	// GetCollectionByIDURL is the URL for searching collections by ID
+	GetCollectionByIDURL = "/collection/"
+	// GetCollectionByTitleURL is the URL for searching collections by title
 	GetCollectionByTitleURL = "/collection-title/"
 )
 
+// CollectionByID is an HTTPFun for searching collections by ID
 func CollectionByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetCollectionByIDURL)
@@ -37,6 +40,7 @@ func CollectionByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) 
 	}
 }
 
+// CollectionByTitle is an HTTPFunc for searching collections by title.
 func CollectionByTitle(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetCollectionByTitleURL)

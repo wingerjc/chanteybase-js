@@ -9,7 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func LoadPersonConfig(dialect *SqlDialect) *DatabaseModel {
+func LoadPersonConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS person(
 		id $TEXT PRIMARY KEY,
@@ -33,7 +33,7 @@ type Person struct {
 	Note      string `db:"note" json:"note"`
 }
 
-func (p *Person) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
+func (p *Person) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 	statement := dialect.replaceInsertPrefix + `INTO
 	person (id, group_name, first_name, last_name, clarifier, note)
 	VALUES ($1, $2, $3, $4, $5, $6);`
@@ -49,7 +49,7 @@ func (p *Person) Write(tx *sql.Tx, dialect SqlDialect) (sql.Result, error) {
 	)
 }
 
-func WritePeople(db *sqlx.DB, people []*Person, dialect SqlDialect) error {
+func WritePeople(db *sqlx.DB, people []*Person, dialect SQLDialect) error {
 	tx, err := db.BeginTx(context.TODO(), &sql.TxOptions{ReadOnly: false})
 	if err != nil {
 		return err
@@ -63,7 +63,7 @@ func WritePeople(db *sqlx.DB, people []*Person, dialect SqlDialect) error {
 	return tx.Commit()
 }
 
-type PersonJson struct {
+type PersonJSON struct {
 	GroupName string `json:"group-name"`
 	FirstName string `json:"first-name"`
 	LastName  string `json:"last-name"`
@@ -71,7 +71,7 @@ type PersonJson struct {
 	Note      string `json:"note"`
 }
 
-func (p *PersonJson) ToDBPerson() *Person {
+func (p *PersonJSON) ToDBPerson() *Person {
 	return &Person{
 		ID:        p.ID(),
 		GroupName: p.GroupName,
@@ -82,7 +82,7 @@ func (p *PersonJson) ToDBPerson() *Person {
 	}
 }
 
-func (p *PersonJson) ID() string {
+func (p *PersonJSON) ID() string {
 	b := strings.Builder{}
 	fmt.Printf("group name *%s*\n", p.GroupName)
 	if len(p.GroupName) != 0 {

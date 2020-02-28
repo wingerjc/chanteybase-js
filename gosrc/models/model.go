@@ -17,12 +17,12 @@ type ModelConfig struct {
 	Insert      string
 }
 
-type SqlDialect struct {
+type SQLDialect struct {
 	replaceInsertPrefix string
 	replacements        map[string]string
 }
 
-func NewDatabaseModel(dialect *SqlDialect, config ModelConfig) *DatabaseModel {
+func NewDatabaseModel(dialect *SQLDialect, config ModelConfig) *DatabaseModel {
 	return &DatabaseModel{
 		createScript:     processScript(config.Create, dialect.replacements),
 		constraintScript: processScript(config.Constraints, dialect.replacements),
@@ -50,8 +50,8 @@ func processScript(script string, dialect map[string]string) string {
 	return result
 }
 
-func SQLITE3_DIALECT() *SqlDialect {
-	return &SqlDialect{
+func SQLITE3_DIALECT() *SQLDialect {
+	return &SQLDialect{
 		replaceInsertPrefix: "INSERT OR REPLACE ",
 		replacements: map[string]string{
 			"$TEXT": "TEXT",

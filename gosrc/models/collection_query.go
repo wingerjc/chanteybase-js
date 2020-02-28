@@ -12,6 +12,7 @@ func collectionQuery(db *sqlx.DB, sql, searchString string) ([]Collection, error
 	return result, err
 }
 
+// CollectionByID returns all collections where the id is like the search string.
 func CollectionByID(db *sqlx.DB, id string) ([]Collection, error) {
 	return collectionQuery(
 		db,
@@ -20,6 +21,7 @@ func CollectionByID(db *sqlx.DB, id string) ([]Collection, error) {
 	)
 }
 
+// CollectionByTitle returns all the collections where the title is like the search string.
 func CollectionByTitle(db *sqlx.DB, name string) ([]Collection, error) {
 	return collectionQuery(
 		db,
