@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+// DatabaseModel represent the config for a single model that can be written to the DB.
 type DatabaseModel struct {
 	configFile       string
 	createScript     string
@@ -11,17 +12,20 @@ type DatabaseModel struct {
 	insertScript     string
 }
 
+// ModelConfig Is the pre-dialect creation scripts for a given model.
 type ModelConfig struct {
 	Create      string
 	Constraints string
 	Insert      string
 }
 
+// SQLDialect has dialect replacements for create/insert/update scripts..
 type SQLDialect struct {
 	replaceInsertPrefix string
 	replacements        map[string]string
 }
 
+// NewDatabaseModel converts a database config to the passed dialect.
 func NewDatabaseModel(dialect *SQLDialect, config ModelConfig) *DatabaseModel {
 	return &DatabaseModel{
 		createScript:     processScript(config.Create, dialect.replacements),
@@ -30,14 +34,17 @@ func NewDatabaseModel(dialect *SQLDialect, config ModelConfig) *DatabaseModel {
 	}
 }
 
+// CreateScript returns the final creation script for the model tables.
 func (model *DatabaseModel) CreateScript() string {
 	return model.createScript
 }
 
+// ConstraintScript returns the final table creation scripts.
 func (model *DatabaseModel) ConstraintScript() string {
 	return model.constraintScript
 }
 
+// InsertScript returns the final single insertion script.
 func (model *DatabaseModel) InsertScript() string {
 	return model.insertScript
 }
@@ -50,7 +57,8 @@ func processScript(script string, dialect map[string]string) string {
 	return result
 }
 
-func SQLITE3_DIALECT() *SQLDialect {
+// Sqlite3Dialect has the dialect definition for sqlite3.
+func Sqlite3Dialect() *SQLDialect {
 	return &SQLDialect{
 		replaceInsertPrefix: "INSERT OR REPLACE ",
 		replacements: map[string]string{

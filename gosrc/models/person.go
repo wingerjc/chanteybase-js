@@ -9,6 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// LoadPersonConfig returns the config for person model entries.
 func LoadPersonConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS person(
@@ -24,6 +25,7 @@ func LoadPersonConfig(dialect *SQLDialect) *DatabaseModel {
 	return NewDatabaseModel(dialect, conf)
 }
 
+// Person is a definition for a database model and JSON output model.
 type Person struct {
 	ID        string `db:"id" json:"id"`
 	GroupName string `db:"group_name" json:"group-name"`
@@ -33,6 +35,7 @@ type Person struct {
 	Note      string `db:"note" json:"note"`
 }
 
+// Write a person model to the database.
 func (p *Person) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 	statement := dialect.replaceInsertPrefix + `INTO
 	person (id, group_name, first_name, last_name, clarifier, note)
@@ -49,6 +52,7 @@ func (p *Person) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 	)
 }
 
+// WritePeople writes the whole given list of people to the database.
 func WritePeople(db *sqlx.DB, people []*Person, dialect SQLDialect) error {
 	tx, err := db.BeginTx(context.TODO(), &sql.TxOptions{ReadOnly: false})
 	if err != nil {
@@ -63,6 +67,7 @@ func WritePeople(db *sqlx.DB, people []*Person, dialect SQLDialect) error {
 	return tx.Commit()
 }
 
+// PersonJSON is the model for incoming JSON definitions.
 type PersonJSON struct {
 	GroupName string `json:"group-name"`
 	FirstName string `json:"first-name"`
@@ -71,6 +76,7 @@ type PersonJSON struct {
 	Note      string `json:"note"`
 }
 
+// ToDBPerson converts this JSON model into a database writeable model.
 func (p *PersonJSON) ToDBPerson() *Person {
 	return &Person{
 		ID:        p.ID(),
@@ -82,6 +88,7 @@ func (p *PersonJSON) ToDBPerson() *Person {
 	}
 }
 
+// ID returns the calculated ID for this JSON model.
 func (p *PersonJSON) ID() string {
 	b := strings.Builder{}
 	fmt.Printf("group name *%s*\n", p.GroupName)

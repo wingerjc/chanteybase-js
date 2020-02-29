@@ -17,7 +17,7 @@ func ChanteyByID(db *sqlx.DB, idString string) ([]Chantey, error) {
 	return chanteyQuery(
 		db,
 		`SELECT * FROM chantey WHERE id LIKE $1;`,
-		dbSearchString(strings.ToUpper(NON_ID_CHAR_REGEX.ReplaceAllString(idString, ""))),
+		dbSearchString(strings.ToUpper(nonIDCharRegex.ReplaceAllString(idString, ""))),
 	)
 }
 

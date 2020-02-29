@@ -17,7 +17,7 @@ func CollectionByID(db *sqlx.DB, id string) ([]Collection, error) {
 	return collectionQuery(
 		db,
 		`SELECT * FROM collection WHERE id LIKE $1;`,
-		dbSearchString(strings.ToUpper(NON_ID_CHAR_REGEX.ReplaceAllString(id, ""))),
+		dbSearchString(strings.ToUpper(nonIDCharRegex.ReplaceAllString(id, ""))),
 	)
 }
 

@@ -6,6 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// GetPersonByID fetches a person, by exact ID match.
 func GetPersonByID(db *sqlx.DB, id string) ([]Person, error) {
 	result := []Person{}
 
@@ -17,9 +18,10 @@ func GetPersonByID(db *sqlx.DB, id string) ([]Person, error) {
 	return result, nil
 }
 
+// GetPersonIDs fetches a list of person IDs by similar id match.
 func GetPersonIDs(db *sqlx.DB, pattern string) ([]string, error) {
 	result := []string{}
-	searchString := "%" + strings.ToUpper(NON_ID_CHAR_REGEX.ReplaceAllString(pattern, "")) + "%"
+	searchString := "%" + strings.ToUpper(nonIDCharRegex.ReplaceAllString(pattern, "")) + "%"
 	sql := `SELECT id FROM person WHERE id like $1;`
 	err := db.Select(&result, sql, searchString)
 	return result, err

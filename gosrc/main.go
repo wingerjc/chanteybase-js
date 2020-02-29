@@ -33,7 +33,7 @@ func main() {
 		log.Fatalf("Couldn't open DB: %s", err.Error())
 	}
 
-	dialect := models.SQLITE3_DIALECT()
+	dialect := models.Sqlite3Dialect()
 	log.Printf("config dir %s", config.ConfigDirectory)
 	modelDefs := models.GetModelDefinitions(dialect)
 	for _, s := range modelDefs {

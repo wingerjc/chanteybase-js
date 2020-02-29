@@ -7,6 +7,7 @@ import (
 	"path"
 )
 
+// GetModelDefinitions fetches all the definitions for models.
 func GetModelDefinitions(dialect *SQLDialect) []*DatabaseModel {
 	return []*DatabaseModel{
 		LoadConstantsConfig(dialect),
@@ -16,17 +17,20 @@ func GetModelDefinitions(dialect *SQLDialect) []*DatabaseModel {
 	}
 }
 
+// ProgressTracker allows progress tracking for loading.
 type ProgressTracker struct {
 	CurrentFile chan string
 	Progress    chan int
 }
 
+// LoadedModelData The data loaded from JSON.
 type LoadedModelData struct {
 	People      []*Person
 	Collections []*Collection
 	Chanteys    []*Chantey
 }
 
+// GetDataFromJSON loads all the data from JSON into writable models.
 func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelData {
 	filePath := path.Join(dataPath, "person.json")
 	data, err := ioutil.ReadFile(filePath)
@@ -80,6 +84,7 @@ func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	}
 }
 
+// LoadConstantsConfig returns the config for constant tables.
 func LoadConstantsConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS location_type(type $TEXT PRIMARY KEY);
