@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -59,7 +60,13 @@ func LoadChanteyConfig(dialect *SQLDialect) *DatabaseModel {
 	    CONSTRAINT location_type_fk
 		  FOREIGN KEY (location_type)
 		  REFERENCES location_type(type)
-    	);`,
+		);
+		CREATE TABLE IF NOT EXISTS chantey_tune(
+		chantey_id $TEXT REFERENCES chantey(id),
+		tune_id $TEXT REFERENCES tune(id),
+		CONSTRAINT chantey_tune_pk
+		  PRIMARY KEY (chantey_id, tune_id)
+		);`,
 		Constraints: "",
 	}
 	return NewDatabaseModel(dialect, conf)
@@ -83,7 +90,52 @@ type Chantey struct {
 
 // Write a chantey into the given DB.
 func (c *Chantey) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
-	statement := dialect.replaceInsertPrefix + `INTO
+	// Write Tune ID mappings for later searching.
+	tuneIds := strings.Split(c.TuneIDs, "\n")
+	for i, t := range tuneIds {
+		tuneIds[i] = strings.ToUpper(nonIDCharRegex.ReplaceAllString(t, ""))
+	}
+	b := strings.Builder{}
+	for i, t := range tuneIds {
+		if i > 0 {
+			b.WriteString(",")
+		}
+		b.WriteString("\n('" + t + "')")
+	}
+	b.WriteString(";")
+	statement := dialect.replaceInsertPrefix + `INTO tune(id) VALUES` + b.String()
+	log.Println(statement)
+	if len(tuneIds) > 0 {
+		res, err := tx.Exec(statement)
+		if err != nil {
+			return res, err
+		}
+	}
+
+	b = strings.Builder{}
+	for i, t := range tuneIds {
+		if i > 0 {
+			b.WriteString(",")
+		}
+		b.WriteString("('" + c.ID + "', '" + t + "')")
+	}
+	b.WriteString(";")
+
+	// Write chantey type mappings for later searching.
+	// TODO
+
+	// Write root DB entry.
+	statement = dialect.replaceInsertPrefix + `INTO chantey_tune(chantey_id, tune_id) VALUES` +
+		b.String()
+	log.Println(statement)
+	if len(tuneIds) > 0 {
+		res, err := tx.Exec(statement)
+		if err != nil {
+			return res, err
+		}
+	}
+
+	statement = dialect.replaceInsertPrefix + `INTO
 	chantey (id, tune_ids, collection_id, collection_location, location_type, version, performer_id, title, themes, types, lyrics, abc)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`
 	fmt.Println(c)

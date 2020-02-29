@@ -8,9 +8,11 @@ import (
 )
 
 // GetModelDefinitions fetches all the definitions for models.
+// configs are returned in the order they should be applied.
 func GetModelDefinitions(dialect *SQLDialect) []*DatabaseModel {
 	return []*DatabaseModel{
 		LoadConstantsConfig(dialect),
+		LoadSupportingTableConfig(dialect),
 		LoadChanteyConfig(dialect),
 		LoadCollectionConfig(dialect),
 		LoadPersonConfig(dialect),
@@ -101,5 +103,15 @@ func LoadConstantsConfig(dialect *SQLDialect) *DatabaseModel {
 		  ('CAPSTAN');`,
 	}
 
+	return NewDatabaseModel(dialect, conf)
+}
+
+// LoadSupportingTableConfig loads all the tables that aren't static data or models.
+func LoadSupportingTableConfig(dialect *SQLDialect) *DatabaseModel {
+	conf := ModelConfig{
+		Create: `CREATE TABLE IF NOT EXISTS tune (
+			  id $TEXT PRIMARY KEY
+			);`,
+	}
 	return NewDatabaseModel(dialect, conf)
 }

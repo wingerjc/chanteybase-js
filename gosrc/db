@@ -1,2 +1,2 @@
 #!/bin/bash
-sqlite3 chanteys.db
+sqlite3 chanteys.db -header -column
