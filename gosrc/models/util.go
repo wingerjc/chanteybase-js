@@ -9,6 +9,8 @@ import (
 var nonAlphaRegex, _ = regexp.Compile("[[^:alnum:]]+")
 var whitespaceRegex, _ = regexp.Compile("[[:space:]]+")
 var nonIDCharRegex, _ = regexp.Compile(`[^A-Za-z0-9.]+`)
+var nonTypeCharRegex, _ = regexp.Compile(`[^A-Za-z_]+`)
+var nonThemeRegex, _ = regexp.Compile(`[^A-Za-z ]+`)
 
 func convertKeyString(base []string, maxKeyLen int) string {
 	title := strings.ToUpper(strings.Join(base, ""))

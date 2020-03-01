@@ -66,6 +66,18 @@ func LoadChanteyConfig(dialect *SQLDialect) *DatabaseModel {
 		tune_id $TEXT REFERENCES tune(id),
 		CONSTRAINT chantey_tune_pk
 		  PRIMARY KEY (chantey_id, tune_id)
+		);
+		CREATE TABLE IF NOT EXISTS chantey_type_match(
+		chantey_id $TEXT REFERENCES chantey(id),
+		type_id $TEXT REFERENCES chantey_type(id),
+		CONSTRAINT chantey_type_match_PK
+		  PRIMARY KEY (chantey_id, type_id)
+		);
+		CREATE TABLE IF NOT EXISTS chantey_theme(
+		chantey_id $TEXT REFERENCES chantey(id),
+		theme_id $TEXT DREFERENCES theme(id),
+		CONSTRAINT chantey_theme_pk
+		  PRIMARY KEY (chantey_id, theme_id)
 		);`,
 		Constraints: "",
 	}
@@ -112,21 +124,16 @@ func (c *Chantey) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 		}
 	}
 
-	b = strings.Builder{}
+	//b = strings.Builder{}
+	b.Reset()
 	for i, t := range tuneIds {
 		if i > 0 {
 			b.WriteString(",")
 		}
-		b.WriteString("('" + c.ID + "', '" + t + "')")
+		b.WriteString("\n('" + c.ID + "', '" + t + "')")
 	}
 	b.WriteString(";")
-
-	// Write chantey type mappings for later searching.
-	// TODO
-
-	// Write root DB entry.
-	statement = dialect.replaceInsertPrefix + `INTO chantey_tune(chantey_id, tune_id) VALUES` +
-		b.String()
+	statement = dialect.replaceInsertPrefix + `INTO chantey_tune(chantey_id, tune_id) VALUES` + b.String()
 	log.Println(statement)
 	if len(tuneIds) > 0 {
 		res, err := tx.Exec(statement)
@@ -135,6 +142,33 @@ func (c *Chantey) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 		}
 	}
 
+	// Write chantey type mappings for later searching.
+	types := strings.Split(c.Types, "\n")
+	for i, t := range types {
+		types[i] = strings.ToUpper(nonTypeCharRegex.ReplaceAllString(t, ""))
+	}
+
+	b = strings.Builder{}
+	for i, t := range types {
+		if i > 0 {
+			b.WriteString(",")
+		}
+		b.WriteString("\n('" + c.ID + "', '" + t + "')")
+	}
+	statement = dialect.replaceInsertPrefix + "INTO chantey_type_match(chantey_id, type_id) VALUES" +
+		b.String()
+	log.Println(statement)
+	res, err := tx.Exec(statement)
+	if err != nil {
+		return res, err
+	}
+
+	// Write theme mappings for later searching.
+	// themes := strings.Split(c.Themes, "\n")
+	// for i, t := range themes
+	// TODO
+
+	// Write root DB entry.
 	statement = dialect.replaceInsertPrefix + `INTO
 	chantey (id, tune_ids, collection_id, collection_location, location_type, version, performer_id, title, themes, types, lyrics, abc)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`

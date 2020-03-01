@@ -111,6 +111,9 @@ func LoadSupportingTableConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS tune (
 			  id $TEXT PRIMARY KEY
+			);
+			CREATE TABLE IF NOT EXISTS theme (
+			  id $TEXT PRIMARY KEY
 			);`,
 	}
 	return NewDatabaseModel(dialect, conf)
