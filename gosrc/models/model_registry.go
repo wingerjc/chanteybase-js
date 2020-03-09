@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 	"path"
+	"path/filepath"
+	"strings"
 )
 
 // GetModelDefinitions fetches all the definitions for models.
@@ -64,18 +67,32 @@ func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelDat
 		collections = append(collections, c.ToDBCollection())
 	}
 
-	filePath = path.Join(dataPath, "chantey.json")
-	data, err = ioutil.ReadFile(filePath)
+	paths := []string{}
+	filePath = path.Join(dataPath, "chantey")
+	err = filepath.Walk(filePath, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".json") {
+			paths = append(paths, path)
+		}
+		return nil
+	})
 	if err != nil {
-		log.Printf("Error loading chantey file %s | %s", filePath, err.Error)
+		log.Printf("Error loading chantey files: %s", err.Error())
 	}
-	chanteysJSON := make([]ChanteyJSON, 0)
-	err = json.Unmarshal(data, &chanteysJSON)
-	if err != nil {
-		log.Printf("Error parsing chantey file %s", err.Error)
+	allChantey := []ChanteyJSON{}
+	for _, path := range paths {
+		data, err = ioutil.ReadFile(path)
+		if err != nil {
+			log.Printf("Error loading chantey file %s | %s", path, err.Error())
+		}
+		chanteysJSON := make([]ChanteyJSON, 0)
+		err = json.Unmarshal(data, &chanteysJSON)
+		if err != nil {
+			log.Printf("Error parsing chantey file %s | %s", path, err.Error())
+		}
+		allChantey = append(allChantey, chanteysJSON...)
 	}
-	chanteys := make([]*Chantey, 0, len(chanteysJSON))
-	for _, p := range chanteysJSON {
+	chanteys := make([]*Chantey, 0, len(allChantey))
+	for _, p := range allChantey {
 		chanteys = append(chanteys, p.ToDBChantey())
 	}
 
