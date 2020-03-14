@@ -37,9 +37,8 @@ type Person struct {
 
 // Write a person model to the database.
 func (p *Person) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
-	statement := dialect.replaceInsertPrefix + `INTO
-	person (id, group_name, first_name, last_name, clarifier, note)
-	VALUES ($1, $2, $3, $4, $5, $6);`
+	statement := dialect.InsertStatement(`person (id, group_name, first_name, last_name, clarifier, note)
+	VALUES ($1, $2, $3, $4, $5, $6)`)
 	fmt.Println(p)
 	return tx.Exec(
 		statement,

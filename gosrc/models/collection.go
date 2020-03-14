@@ -23,7 +23,7 @@ func LoadCollectionConfig(dialect *SQLDialect) *DatabaseModel {
 		oclc $TEXT NOT NULL,
 		lccn $TEXT NOT NULL,
 		isbn $TEXT NOT NULL,
-		CONSTRAINT collector_fk,
+		CONSTRAINT collector_fk
 		  FOREIGN KEY (collector_id)
 		  REFERENCES person(id)
 		);`,
@@ -87,9 +87,8 @@ func (c *CollectionJSON) ID() string {
 
 // Write this entry to the database.
 func (c *Collection) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
-	statement := dialect.replaceInsertPrefix + `INTO
-	collection (id, title, volume, publication_year, edition, collector_id, oclc, lccn, isbn)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`
+	statement := dialect.InsertStatement(`collection (id, title, volume, publication_year, edition, collector_id, oclc, lccn, isbn)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`)
 	fmt.Println(c)
 	return tx.Exec(
 		statement,

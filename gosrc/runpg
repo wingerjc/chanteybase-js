@@ -1,0 +1,3 @@
+#!/bin/bash
+export PGPASSWORD=chantey; psql -U chanteybase -d chanteybase_db -h localhost -p 5432 < clean_pg.sql
+./chanteybase-srv.exe -server -psql="host=localhost port=5432 user=chanteybase password=chantey dbname=chanteybase_db sslmode=disable"

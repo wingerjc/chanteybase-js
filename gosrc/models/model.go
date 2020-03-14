@@ -21,8 +21,12 @@ type ModelConfig struct {
 
 // SQLDialect has dialect replacements for create/insert/update scripts..
 type SQLDialect struct {
-	replaceInsertPrefix string
-	replacements        map[string]string
+	replaceInsertStatement string
+	replacements           map[string]string
+}
+
+func (dialect *SQLDialect) InsertStatement(valueStatement string) string {
+	return strings.Replace(dialect.replaceInsertStatement, "$VALUES", valueStatement, 1)
 }
 
 // NewDatabaseModel converts a database config to the passed dialect.
@@ -60,7 +64,17 @@ func processScript(script string, dialect map[string]string) string {
 // Sqlite3Dialect has the dialect definition for sqlite3.
 func Sqlite3Dialect() *SQLDialect {
 	return &SQLDialect{
-		replaceInsertPrefix: "INSERT OR REPLACE ",
+		replaceInsertStatement: "INSERT OR REPLACE INTO $VALUES;",
+		replacements: map[string]string{
+			"$TEXT": "TEXT",
+			"$INT":  "INTEGER",
+		},
+	}
+}
+
+func Postgres12Dialect() *SQLDialect {
+	return &SQLDialect{
+		replaceInsertStatement: "INSERT INTO $VALUES ON CONFLICT DO NOTHING;",
 		replacements: map[string]string{
 			"$TEXT": "TEXT",
 			"$INT":  "INTEGER",

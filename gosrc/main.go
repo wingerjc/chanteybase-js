@@ -11,6 +11,7 @@ import (
 	"local.dev/models"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -24,29 +25,45 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	runServer := flag.Bool("server", false, "Set true to run as an http server.")
+	pSQLConnection := flag.String("psql", "", "Postgres SQL connection string.")
 	flag.Parse()
 
 	config := loadConfig()
-	sqlDB, err := sqlx.Open("sqlite3", config.DBFile)
+	var err error
+	var sqlDB *sqlx.DB
+	var dialect *models.SQLDialect
+	if *pSQLConnection == "" {
+		sqlDB, err = sqlx.Open("sqlite3", config.DBFile)
+		dialect = models.Sqlite3Dialect()
+	} else {
+		sqlDB, err = sqlx.Open("postgres", *pSQLConnection)
+		dialect = models.Postgres12Dialect()
+	}
 	defer sqlDB.Close()
 	if err != nil {
 		log.Fatalf("Couldn't open DB: %s", err.Error())
 	}
 
-	dialect := models.Sqlite3Dialect()
 	log.Printf("config dir %s", config.ConfigDirectory)
 	modelDefs := models.GetModelDefinitions(dialect)
 	for _, s := range modelDefs {
 		log.Print(s.CreateScript())
-		sqlDB.Exec(s.CreateScript())
+		if _, err := sqlDB.Exec(s.CreateScript()); err != nil {
+			log.Fatal(err.Error())
+		}
 	}
 	for _, s := range modelDefs {
 		log.Print(s.ConstraintScript())
-		sqlDB.Exec(s.ConstraintScript())
+		if _, err := sqlDB.Exec(s.ConstraintScript()); err != nil {
+			log.Fatal(err.Error())
+		}
 	}
 	for _, s := range modelDefs {
 		log.Print(s.InsertScript())
-		sqlDB.Exec(s.InsertScript())
+		if _, err := sqlDB.Exec(s.InsertScript()); err != nil {
+			log.Fatal(err.Error())
+		}
+
 	}
 
 	data := models.GetDataFromJSON(config.DataDirectory, nil)

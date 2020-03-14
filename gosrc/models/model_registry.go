@@ -16,9 +16,9 @@ func GetModelDefinitions(dialect *SQLDialect) []*DatabaseModel {
 	return []*DatabaseModel{
 		LoadConstantsConfig(dialect),
 		LoadSupportingTableConfig(dialect),
-		LoadChanteyConfig(dialect),
-		LoadCollectionConfig(dialect),
 		LoadPersonConfig(dialect),
+		LoadCollectionConfig(dialect),
+		LoadChanteyConfig(dialect),
 	}
 }
 
@@ -108,11 +108,11 @@ func LoadConstantsConfig(dialect *SQLDialect) *DatabaseModel {
 	conf := ModelConfig{
 		Create: `CREATE TABLE IF NOT EXISTS location_type(type $TEXT PRIMARY KEY);
 			CREATE TABLE IF NOT EXISTS chantey_type(type $TEXT PRIMARY KEY);`,
-		Insert: `INSERT INTO TABLE location_type(type) VALUES
+		Insert: `INSERT INTO location_type(type) VALUES
 		  ('PAGE'),
 		  ('SECONDS'),
 		  ('TRACK');
-		INSERT INTO TABLE chantey_type(type) VALUES
+		INSERT INTO chantey_type(type) VALUES
 		  ('SHORT_DRAG'),
 		  ('BUNTING'),
 		  ('HALYARD'),
