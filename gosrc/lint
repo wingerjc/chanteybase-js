@@ -1,0 +1,4 @@
+#!/bin/bash
+golint
+golint actions/*.go
+golint models/*.go

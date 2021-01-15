@@ -7,3 +7,7 @@ tmp
 .idea
 *~
 #*#
+bazel-*
+secrets.json
+chanteys.db
+*.exe
