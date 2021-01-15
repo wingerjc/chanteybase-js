@@ -1,0 +1,36 @@
+// Chantey
+{
+    "tune-ids": [""],
+    "collection-id": "",
+    "collection-location":0,
+    "location-type":"",
+    "version":"",
+    "performer-id":"UNKNOWN",
+    "title": [""],
+    "themes": [""],
+    "types": [""],
+    "lyrics": [""],
+    "abc":[]
+}
+
+// Collection
+{
+    "title":[""],
+    "publication-year":1900,
+    "edition":1,
+    "volume":0,
+    "oclc":"",
+    "isbn":"",
+    "lccn":"",
+    "collector-id":""
+}
+
+
+// Person
+{
+    "group-name":"",
+    "first-name":"",
+    "last-name":"",
+    "clarifier":"",
+    "note":""
+}
