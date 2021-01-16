@@ -11,4 +11,4 @@ bazel-*
 secrets.json
 chanteys.db
 *.exe
-rustsrc/chanteybase/target/
+target/

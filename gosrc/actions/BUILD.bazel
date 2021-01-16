@@ -4,16 +4,11 @@ go_library(
     name = "go_default_library",
     srcs = [
         "chantey.go",
-        "chantey_query.go",
         "collection.go",
-        "collection_query.go",
-        "model.go",
-        "model_registry.go",
         "person.go",
-        "person_query.go",
         "util.go",
     ],
-    importpath = "github.com/wingerjc/chanteybase-js/go/models",
+    importpath = "github.com/wingerjc/chanteybase-js/go/actions",
     visibility = ["//visibility:public"],
     deps = ["@com_github_jmoiron_sqlx//:go_default_library"],
 )

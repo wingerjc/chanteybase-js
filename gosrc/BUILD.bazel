@@ -11,12 +11,13 @@ go_library(
     visibility = ["//visibility:private"],
     deps = [
         "@com_github_jmoiron_sqlx//:go_default_library",
+        "@com_github_lib_pq//:go_default_library",
         "@com_github_mattn_go_sqlite3//:go_default_library",
     ],
 )
 
 go_binary(
-    name = "go",
+    name = "gosrc",
     embed = [":go_default_library"],
     visibility = ["//visibility:public"],
 )

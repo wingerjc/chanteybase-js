@@ -39,3 +39,31 @@ go_repository(
     commit = "9bdaffc12bf8be15afceb51bb60851edd4afdff5",
     importpath = "github.com/mattn/go-sqlite3",
 )
+
+go_repository(
+    name = "com_github_lib_pq",
+    commit = "4604d39ddc9f62e2ca152114c73aec99b77a3468",
+    importpath = "github.com/lib/pq",
+)
+
+http_archive(
+    name = "io_bazel_rules_rust",
+    sha256 = "b5d4d1c7609714dfef821355f40353c58aa1afb3803401b3442ed2355db9b0c7",
+    strip_prefix = "rules_rust-8d2b4eeeff9dce24f5cbb36018f2d60ecd676639",
+    urls = [
+        # Master branch as of 2020-11-10
+        "https://github.com/bazelbuild/rules_rust/archive/8d2b4eeeff9dce24f5cbb36018f2d60ecd676639.tar.gz",
+    ],
+)
+
+load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
+
+rust_repositories(version = "1.49.0", edition = "2018")
+
+load("@io_bazel_rules_rust//:workspace.bzl", "rust_workspace")
+
+rust_workspace()
+
+load("//cargo:crates.bzl", "raze_fetch_remote_crates")
+
+raze_fetch_remote_crates()
