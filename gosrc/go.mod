@@ -1,6 +1,6 @@
 module chanteybase-srv
 
-go 1.13
+go 1.17
 
 require (
 	github.com/go-delve/delve v1.4.0 // indirect

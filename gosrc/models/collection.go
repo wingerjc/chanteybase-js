@@ -80,7 +80,7 @@ func (c *CollectionJSON) ID() string {
 	b.WriteString(strconv.Itoa(c.PublicationYear))
 	if c.Volume != 0 {
 		b.WriteString(".")
-		b.WriteString(string(c.Volume))
+		b.WriteString(fmt.Sprint(c.Volume))
 	}
 	return b.String()
 }

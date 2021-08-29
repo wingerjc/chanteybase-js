@@ -1,6 +1,6 @@
 module actions
 
-go 1.13
+go 1.17
 
 require (
 	github.com/jmoiron/sqlx v1.2.0

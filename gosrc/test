@@ -1,0 +1,2 @@
+#!/bin/bash
+go test models/*.go && go test actions/*.go && go test *.go

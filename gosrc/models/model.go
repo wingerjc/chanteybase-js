@@ -25,6 +25,7 @@ type SQLDialect struct {
 	replacements           map[string]string
 }
 
+// InsertStatement creates an insert statement from the list of values.
 func (dialect *SQLDialect) InsertStatement(valueStatement string) string {
 	return strings.Replace(dialect.replaceInsertStatement, "$VALUES", valueStatement, 1)
 }
@@ -72,6 +73,7 @@ func Sqlite3Dialect() *SQLDialect {
 	}
 }
 
+// Postgres12Dialect is a SQLDialect for postgres 12
 func Postgres12Dialect() *SQLDialect {
 	return &SQLDialect{
 		replaceInsertStatement: "INSERT INTO $VALUES ON CONFLICT DO NOTHING;",
