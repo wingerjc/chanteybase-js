@@ -13,18 +13,22 @@
     "abc":[]
 }
 
-// Collection
+// Collection 
 {
-    "title":[""],
-    "publication-year":1900,
-    "edition":1,
-    "volume":0,
-    "oclc":"",
-    "isbn":"",
-    "lccn":"",
-    "collector-id":""
-}
+    "meta": {
+        "title":[""],
+        "publication-year":1900,
+        "edition":1,
+        "volume":0,
+        "oclc":"",
+        "isbn":"",
+        "lccn":"",
+        "collector-id":""
+    },
+    "songs": [
 
+    ],
+}
 
 // Person
 {
