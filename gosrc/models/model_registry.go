@@ -52,20 +52,20 @@ func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelDat
 		people = append(people, p.ToDBPerson())
 	}
 
-	filePath = path.Join(dataPath, "collection.json")
-	data, err = ioutil.ReadFile(filePath)
-	if err != nil {
-		log.Printf("Error loading collections file %s | %s", filePath, err.Error())
-	}
-	collectionsJSON := make([]CollectionJSON, 0)
-	err = json.Unmarshal(data, &collectionsJSON)
-	if err != nil {
-		log.Printf("Error parsing collections file %s", err.Error())
-	}
-	collections := make([]*Collection, 0, len(collectionsJSON))
-	for _, c := range collectionsJSON {
-		collections = append(collections, c.ToDBCollection())
-	}
+	// filePath = path.Join(dataPath, "collection.json")
+	// data, err = ioutil.ReadFile(filePath)
+	// if err != nil {
+	// 	log.Printf("Error loading collections file %s | %s", filePath, err.Error())
+	// }
+	// collectionsJSON := make([]CollectionJSON, 0)
+	// err = json.Unmarshal(data, &collectionsJSON)
+	// if err != nil {
+	// 	log.Printf("Error parsing collections file %s", err.Error())
+	// }
+	// collections := make([]*Collection, 0, len(collectionsJSON))
+	// for _, c := range collectionsJSON {
+	// 	collections = append(collections, c.ToDBCollection())
+	// }
 
 	paths := []string{}
 	filePath = path.Join(dataPath, "chantey")
@@ -79,17 +79,24 @@ func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelDat
 		log.Printf("Error loading chantey files: %s", err.Error())
 	}
 	allChantey := []ChanteyJSON{}
+	allCollections := []CollectionJSON{}
 	for _, path := range paths {
 		data, err = ioutil.ReadFile(path)
 		if err != nil {
-			log.Printf("Error loading chantey file %s | %s", path, err.Error())
+			log.Printf("Error loading chantey collection file %s | %s", path, err.Error())
 		}
-		chanteysJSON := make([]ChanteyJSON, 0)
-		err = json.Unmarshal(data, &chanteysJSON)
+		var jsonData CollectionFileJSON
+		err = json.Unmarshal(data, &jsonData)
 		if err != nil {
-			log.Printf("Error parsing chantey file %s | %s", path, err.Error())
+			log.Printf("Error parsing chantey collection file %s | %s", path, err.Error())
+			continue
 		}
-		allChantey = append(allChantey, chanteysJSON...)
+		allChantey = append(allChantey, jsonData.Songs...)
+		allCollections = append(allCollections, jsonData.Meta)
+	}
+	collections := make([]*Collection, 0, len(allCollections))
+	for _, c := range allCollections {
+		collections = append(collections, c.ToDBCollection())
 	}
 	chanteys := make([]*Chantey, 0, len(allChantey))
 	for _, p := range allChantey {

@@ -45,6 +45,12 @@ type Collection struct {
 	ISBN            string `db:"isbn" json:"isbn"`
 }
 
+// CollectionFileJSON A file with metadata for the collection and all the songs in it.
+type CollectionFileJSON struct {
+	Meta  CollectionJSON `json:"meta"`
+	Songs []ChanteyJSON  `json:"songs"`
+}
+
 // CollectionJSON is the incoming definition for collection entries.
 type CollectionJSON struct {
 	Title           []string `json:"title"`
