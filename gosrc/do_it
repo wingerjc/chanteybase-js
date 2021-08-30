@@ -1,6 +1,6 @@
 #!/bin/bash
-echo cleaning && ./clean && \
-  echo linting && ./lint && \
-  echo testing && ./test && \
-  echo building && ./build_it && \
-  echo running && ./run
+echo cleaning && ./clean 2>&1 && \
+  echo linting && ./lint 2>&1 && \
+  echo testing && ./test 2>&1 && \
+  echo building && ./build_it 2>&1&& \
+  echo running && ./run 2>&1

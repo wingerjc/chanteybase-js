@@ -183,6 +183,12 @@ func (c *Chantey) Write(tx *sql.Tx, dialect SQLDialect) (sql.Result, error) {
 	return nil, nil
 }
 
+// SetCollectionID updates both the collectionID and the chantey ID.
+func (c *Chantey) SetCollectionID(collectionID string) {
+	c.CollectionID = collectionID
+	c.ID = chanteyID(c.Title, c.CollectionID, c.Version, c.CollectionLocation)
+}
+
 func formatList(data []string, id string) string {
 	if len(data) == 0 {
 		return ""
@@ -219,7 +225,6 @@ func WriteChanteys(db *sqlx.DB, chanteys []*Chantey, dialect SQLDialect) error {
 // ChanteyJSON is the input format for a Chantey entry.
 type ChanteyJSON struct {
 	TuneIDs            []string `json:"tune-ids"`
-	CollectionID       string   `json:"collection-id"`
 	CollectionLocation int      `json:"collection-location"`
 	LocationType       string   `json:"location-type"`
 	Version            string   `json:"version"`
@@ -232,11 +237,11 @@ type ChanteyJSON struct {
 }
 
 // ToDBChantey converts the input format into a database entry.
-func (c *ChanteyJSON) ToDBChantey() *Chantey {
+func (c *ChanteyJSON) ToDBChantey(collectionID string) *Chantey {
 	return &Chantey{
-		ID:                 c.ID(),
+		ID:                 c.ID(collectionID),
 		TuneIDs:            strings.Join(c.TuneIDs, "\n"),
-		CollectionID:       c.CollectionID,
+		CollectionID:       collectionID,
 		CollectionLocation: c.CollectionLocation,
 		LocationType:       c.LocationType,
 		PerformerID:        c.PerfomerID,
@@ -249,18 +254,22 @@ func (c *ChanteyJSON) ToDBChantey() *Chantey {
 }
 
 // ID creates the identifier for this chantey entry.
-func (c *ChanteyJSON) ID() string {
+func (c *ChanteyJSON) ID(collectionID string) string {
+	return chanteyID(strings.Join(c.Title, "\n"), collectionID, c.Version, c.CollectionLocation)
+}
+
+func chanteyID(title string, collectionID string, version string, location int) string {
 	b := strings.Builder{}
-	b.WriteString(convertKeyString(c.Title, 8))
-	if c.CollectionLocation >= 0 {
+	b.WriteString(convertKeyString(strings.Split(title, "\n"), 8))
+	if location >= 0 {
 		b.WriteString(".")
-		b.WriteString(strconv.Itoa(c.CollectionLocation))
+		b.WriteString(strconv.Itoa(location))
 	}
-	if len(c.Version) > 0 {
+	if len(version) > 0 {
 		b.WriteString(".")
-		b.WriteString(c.Version)
+		b.WriteString(version)
 	}
 	b.WriteString(".")
-	b.WriteString(c.CollectionID)
+	b.WriteString(collectionID)
 	return b.String()
 }

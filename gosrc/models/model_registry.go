@@ -78,8 +78,8 @@ func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelDat
 	if err != nil {
 		log.Printf("Error loading chantey files: %s", err.Error())
 	}
-	allChantey := []ChanteyJSON{}
-	allCollections := []CollectionJSON{}
+	collections := make([]*Collection, 0, 0)
+	chanteys := make([]*Chantey, 0, 0)
 	for _, path := range paths {
 		data, err = ioutil.ReadFile(path)
 		if err != nil {
@@ -91,16 +91,13 @@ func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelDat
 			log.Printf("Error parsing chantey collection file %s | %s", path, err.Error())
 			continue
 		}
-		allChantey = append(allChantey, jsonData.Songs...)
-		allCollections = append(allCollections, jsonData.Meta)
-	}
-	collections := make([]*Collection, 0, len(allCollections))
-	for _, c := range allCollections {
-		collections = append(collections, c.ToDBCollection())
-	}
-	chanteys := make([]*Chantey, 0, len(allChantey))
-	for _, p := range allChantey {
-		chanteys = append(chanteys, p.ToDBChantey())
+		collection := jsonData.Meta.ToDBCollection()
+		songs := make([]*Chantey, len(jsonData.Songs), len(jsonData.Songs))
+		for i, s := range jsonData.Songs {
+			songs[i] = s.ToDBChantey(collection.ID)
+		}
+		collections = append(collections, collection)
+		chanteys = append(chanteys, songs...)
 	}
 
 	return &LoadedModelData{
