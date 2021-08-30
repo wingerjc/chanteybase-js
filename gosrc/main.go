@@ -91,9 +91,6 @@ func main() {
 func serverMain(db *sqlx.DB) {
 	s := &server{}
 	http.Handle("/", s)
-	// person searches
-	http.HandleFunc(actions.GetPersonByIDURL, actions.GetPersonByID(db))
-	http.HandleFunc(actions.GetPersonIDsURL, actions.GetPersonIDs(db))
 	// collection searches
 	http.HandleFunc(actions.GetCollectionByIDURL, actions.CollectionByID(db))
 	http.HandleFunc(actions.GetCollectionByTitleURL, actions.CollectionByTitle(db))
@@ -101,6 +98,10 @@ func serverMain(db *sqlx.DB) {
 	http.HandleFunc(actions.GetChanteyByIDURL, actions.ChanteyByID(db))
 	http.HandleFunc(actions.GetChanteyByCollectionIDURL, actions.ChanteyByCollectionID(db))
 
+	paths := actions.PersonActions
+	for _, spec := range paths {
+		http.HandleFunc(spec.URL, spec.Fn(db))
+	}
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

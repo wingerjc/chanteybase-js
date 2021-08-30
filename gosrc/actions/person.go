@@ -15,8 +15,16 @@ const (
 	GetPersonIDsURL = "/person-ids/"
 )
 
-// GetPersonByID is an HTTPFunc for searching all people by partial ID.
-func GetPersonByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
+var (
+	// PersonActions is a list of all actions that mainly fetch person objects.
+	PersonActions = []PathSpec{
+		{Name: "GetPersonByID", URL: GetPersonByIDURL, Fn: GetPersonByIDFn},
+		{Name: "GetPersonIDs", URL: GetPersonIDsURL, Fn: GetPersonIDsFn},
+	}
+)
+
+// GetPersonByIDFn is an HTTPFunc for searching all people by partial ID.
+func GetPersonByIDFn(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetPersonByIDURL)
 		if len(params) == 0 || len(params[0]) == 0 {
@@ -38,8 +46,8 @@ func GetPersonByID(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// GetPersonIDs is an HTTPFunc for getting all person ID's by partial match.
-func GetPersonIDs(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
+// GetPersonIDsFn is an HTTPFunc for getting all person ID's by partial match.
+func GetPersonIDsFn(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params := parseParams(req.URL.EscapedPath(), GetPersonIDsURL)
 		searchString := params[0]

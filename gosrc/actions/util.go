@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func parseParams(urlString, prefix string) []string {
@@ -20,4 +22,11 @@ func parseParams(urlString, prefix string) []string {
 func writeResp(w http.ResponseWriter, code int, msg string) {
 	w.WriteHeader(code)
 	fmt.Fprintf(w, msg)
+}
+
+// PathSpec is a speck for http actions that includes, common name, URL, and handling function.
+type PathSpec struct {
+	Name string
+	URL  string
+	Fn   func(db *sqlx.DB) func(w http.ResponseWriter, req *http.Request)
 }
