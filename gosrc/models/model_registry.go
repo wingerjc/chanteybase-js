@@ -52,21 +52,6 @@ func GetDataFromJSON(dataPath string, progress *ProgressTracker) *LoadedModelDat
 		people = append(people, p.ToDBPerson())
 	}
 
-	// filePath = path.Join(dataPath, "collection.json")
-	// data, err = ioutil.ReadFile(filePath)
-	// if err != nil {
-	// 	log.Printf("Error loading collections file %s | %s", filePath, err.Error())
-	// }
-	// collectionsJSON := make([]CollectionJSON, 0)
-	// err = json.Unmarshal(data, &collectionsJSON)
-	// if err != nil {
-	// 	log.Printf("Error parsing collections file %s", err.Error())
-	// }
-	// collections := make([]*Collection, 0, len(collectionsJSON))
-	// for _, c := range collectionsJSON {
-	// 	collections = append(collections, c.ToDBCollection())
-	// }
-
 	paths := []string{}
 	filePath = path.Join(dataPath, "chantey")
 	err = filepath.Walk(filePath, func(path string, info os.FileInfo, err error) error {
