@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -83,12 +84,12 @@ func main() {
 	}
 
 	if *runServer {
-		serverMain(sqlDB)
+		serverMain(config, sqlDB)
 	}
 
 }
 
-func serverMain(db *sqlx.DB) {
+func serverMain(config *Config, db *sqlx.DB) {
 	s := &server{}
 	http.Handle("/", s)
 	// collection searches
@@ -100,7 +101,9 @@ func serverMain(db *sqlx.DB) {
 
 	paths := actions.PersonActions
 	for _, spec := range paths {
-		http.HandleFunc(spec.URL, spec.Fn(db))
+		url := fmt.Sprintf("%s%s", config.APIPath, spec.URL)
+		http.HandleFunc(url, spec.Fn(url, spec, db))
+		log.Printf("Registering %s at path '%s'", spec.Name, url)
 	}
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -111,6 +114,8 @@ type Config struct {
 	ConfigDirectory string `json:"config-dir"`
 	DataDirectory   string `json:"data-dir"`
 	DBFile          string `json:"db-file"`
+	APIPath         string `json:"api-path"`
+	StaticPath      string `json:"static-path"`
 }
 
 // TODO: pass config filename.

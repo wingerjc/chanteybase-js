@@ -2,5 +2,7 @@
     "sql-engine":"sqlite3",
     "config-dir":"./config/",
     "data-dir":"../data/",
-    "db-file":"./chanteys.db"
+    "db-file":"./chanteys.db",
+    "api-path":"/api",
+    "static-path":"/site"
 }

@@ -11,7 +11,7 @@ func GetPersonByID(db *sqlx.DB, id string) ([]Person, error) {
 	result := []Person{}
 
 	sql := `SELECT * FROM person WHERE id = $1`
-	if err := db.Select(&result, sql, id); err != nil {
+	if err := db.Select(&result, sql, strings.ToUpper(id)); err != nil {
 		return nil, err
 	}
 
