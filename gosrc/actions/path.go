@@ -8,16 +8,18 @@ import (
 	"strings"
 
 	"github.com/jmoiron/sqlx"
+	"local.dev/models"
 )
 
 type URLParam struct {
-	Name    string
-	Comment string
+	Name        string
+	Description string
 }
 
 // PathSpec is a speck for http actions that includes, common name, URL, and handling function.
 type PathSpec struct {
 	Name           string
+	Description    string
 	URL            string
 	Fn             func(url string, spec PathSpec, db *sqlx.DB) func(w http.ResponseWriter, req *http.Request)
 	ReqPathParams  []URLParam
@@ -56,6 +58,28 @@ func (s *PathSpec) DisplayPath() string {
 	return fmt.Sprintf("%s%s/%s", s.URL, reqPath, optPath)
 }
 
+func (s *PathSpec) ToJsonModel() models.PathSpecJSON {
+	paramList := func(l []URLParam) []models.URLParamJSON {
+		result := make([]models.URLParamJSON, len(l), len(l))
+		for i, p := range l {
+			result[i] = models.URLParamJSON{
+				Name:        p.Name,
+				Description: p.Description,
+			}
+		}
+		return result
+	}
+	return models.PathSpecJSON{
+		Name:           s.Name,
+		Description:    s.Description,
+		URL:            s.DisplayPath(),
+		ReqPathParams:  paramList(s.ReqPathParams),
+		OptPathParams:  paramList(s.OptPathParams),
+		ReqQueryParams: paramList(s.ReqQueryParams),
+		OptQueryParams: paramList(s.OptQueryParams),
+	}
+}
+
 // URLParams contains path based parameters, the query fragment, and any query parameters passed.
 type URLParams struct {
 	PathParams    map[string]string
@@ -87,7 +111,7 @@ func NewURLParams(urlData *url.URL, prefix string, pathParams []string) (URLPara
 	}, nil
 }
 
-func AssertRequiredParams(spec PathSpec, params URLParams, w http.ResponseWriter) bool {
+func assertRequiredParams(spec PathSpec, params URLParams, w http.ResponseWriter) bool {
 	if len(params.MissingParams) > 0 {
 		missingList := make([]string, 0, len(params.MissingParams))
 		for k, _ := range params.MissingParams {

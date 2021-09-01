@@ -99,7 +99,10 @@ func serverMain(config *Config, db *sqlx.DB) {
 	http.HandleFunc(actions.GetChanteyByIDURL, actions.ChanteyByID(db))
 	http.HandleFunc(actions.GetChanteyByCollectionIDURL, actions.ChanteyByCollectionID(db))
 
-	paths := actions.PersonActions
+	paths := make([]actions.PathSpec, 0)
+	paths = append(paths, actions.SpecActions...)
+	paths = append(paths, actions.PersonActions...)
+	actions.InitSpecEndpoints(paths)
 	for _, spec := range paths {
 		url := fmt.Sprintf("%s%s", config.APIPath, spec.URL)
 		http.HandleFunc(url, spec.Fn(url, spec, db))

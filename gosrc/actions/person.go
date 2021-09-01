@@ -20,12 +20,12 @@ var (
 	PersonActions = []PathSpec{
 		{Name: "GetPersonByID", URL: GetPersonByIDURL, Fn: GetPersonByIDFn,
 			ReqPathParams: []URLParam{
-				{Name: ":id", Comment: "Exact ID of the person record to fetch"},
+				{Name: ":id", Description: "Exact ID of the person record to fetch"},
 			},
 		},
 		{Name: "GetPersonIDs", URL: GetPersonIDsURL, Fn: GetPersonIDsFn,
 			OptPathParams: []URLParam{
-				{Name: ":target", Comment: "Plain text search target (contains)"},
+				{Name: ":target", Description: "Plain text search target (contains)"},
 			},
 		},
 	}
@@ -35,7 +35,7 @@ var (
 func GetPersonByIDFn(url string, spec PathSpec, db *sqlx.DB) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		params, err := NewURLParams(req.URL, url, spec.GetPathParams())
-		if !AssertRequiredParams(spec, params, w) {
+		if !assertRequiredParams(spec, params, w) {
 			return
 		}
 		data, err := models.GetPersonByID(db, params.PathParams[":id"])
