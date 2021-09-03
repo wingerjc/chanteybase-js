@@ -11,3 +11,4 @@ bazel-*
 secrets.json
 chanteys.db
 *.exe
+mithril/bin/*
