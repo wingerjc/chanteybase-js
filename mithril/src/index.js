@@ -1,3 +1,10 @@
 import m from "mithril";
+import homePage from "./pages/home-page";
+import routes from "./pages/routes";
 
-m.render(document.body, m("h1", "hello world, in mithril!"));
+var root = document.body;
+var routing = {};
+routing[routes.home] = homePage;
+
+console.log(routing);
+m.route(root, routes.home, routing);
