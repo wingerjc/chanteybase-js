@@ -108,6 +108,11 @@ func serverMain(config *Config, db *sqlx.DB) {
 		http.HandleFunc(url, spec.Fn(url, spec, db))
 		log.Printf("Registering %s at path '%s'", spec.Name, url)
 	}
+
+	// Serve the compiled web page from the sie path
+	fs := http.FileServer(http.Dir("../mithril/bin"))
+	http.Handle("/site/", http.StripPrefix("/site/", fs))
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
