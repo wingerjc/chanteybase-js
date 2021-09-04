@@ -1,3 +1,4 @@
 #!/bin/bash
 rm *.db
-./chanteybase-srv.exe -server
+./chanteybase-srv.exe -server &
+cd ../mithril && npm run start

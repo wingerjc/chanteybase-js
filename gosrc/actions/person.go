@@ -39,6 +39,10 @@ func GetPersonByIDFn(url string, spec PathSpec, db *sqlx.DB) func(w http.Respons
 			return
 		}
 		data, err := models.GetPersonByID(db, params.PathParams[":id"])
+		if len(data) == 0 {
+			writeResp(w, 404, "No Such Person")
+			return
+		}
 		if err != nil {
 			writeResp(w, 500, "Couldn't fetch person data.")
 			return

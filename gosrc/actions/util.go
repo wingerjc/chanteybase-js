@@ -1,8 +1,9 @@
 package actions
 
 import (
-	"fmt"
 	"net/http"
+
+	"local.dev/models"
 )
 
 func parseParams(urlString, prefix string) []string {
@@ -19,5 +20,6 @@ func parseParams(urlString, prefix string) []string {
 
 func writeResp(w http.ResponseWriter, code int, msg string) {
 	w.WriteHeader(code)
-	fmt.Fprintf(w, msg)
+	w.Write(models.CreateErrorJson(msg))
+	//fmt.Fprintf(w, msg)
 }

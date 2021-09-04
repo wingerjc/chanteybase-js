@@ -2,6 +2,8 @@ package models
 
 import (
 	"database/sql"
+	"encoding/json"
+	"log"
 	"regexp"
 	"strings"
 )
@@ -46,4 +48,16 @@ func emptyToNA(s string) string {
 
 func dbSearchString(s string) string {
 	return "%" + s + "%"
+}
+
+type ErrorJSON struct {
+	Message string `json:"message"`
+}
+
+func CreateErrorJson(message string) []byte {
+	json, err := json.Marshal(ErrorJSON{Message: message})
+	if err != nil {
+		log.Printf("Couldn't write error message %s", message)
+	}
+	return json
 }
