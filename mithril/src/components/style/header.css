@@ -1,0 +1,10 @@
+
+.header {
+    padding-bottom: 20px;
+    padding-left: 1%;
+    width: 100%;
+}
+
+.header__main-text {
+    font-size: x-large;
+}

@@ -1,9 +1,10 @@
 import m from "mithril";
+import defaultLayout from "./default-layout";
 import { GetQueryParam } from "./util";
 
-export default function PersonPage(initialVnode) {
+const component = function personPage(initialVnode) {
   var data = {};
-  var id = GetQueryParam("id");
+  var id = m.route.param("id"); //GetQueryParam("id");
   m.request({
     method: "GET",
     url: "../api/person/:id",
@@ -29,9 +30,10 @@ export default function PersonPage(initialVnode) {
           m("p", "id: " + d["id"]),
           m("p", "First Name: " + d["first-name"]),
           m("p", "Last Name: " + d["last-name"]),
-          m("br"),
         ]);
       }
     },
   };
-}
+};
+
+export default defaultLayout(component);
